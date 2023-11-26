@@ -150,7 +150,8 @@ addJourney(routeData)
         blocks: [],
       };
     });
-  }, 3000);
+    navigation.navigate("My Journeys");
+  }, 1000);
 
 })
 .catch((error)=>{
