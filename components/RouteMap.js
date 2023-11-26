@@ -37,7 +37,9 @@ export const RouteMap = ({ navigation }) => {
       })
     
       .catch((error) => {
+        alert(error);
         console.log(error, "error in catch");
+        setCounter(0)
       });
   }, [counter]);
 
@@ -213,7 +215,7 @@ addJourney(routeData)
           </>
         )}
       </MapView>
-      {!isMobile && (
+      {!isMobile && location.coords&&(
         <View style={styles.startButton}>
           <Button title="Start" onPress={handleStartPress} />
         </View>

@@ -4,7 +4,7 @@
     "slug": "trackme",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/splash.png",
     "userInterfaceStyle": "light",
     "splash": {
       "image": "./assets/splash.png",
@@ -25,7 +25,7 @@
       "package": "com.chrismark_wilson.trackme",
       "config":{
         "googleMaps":{
-          "apiKey":"replace this with the api key from .env"
+          "apiKey":"AIzaSyB4K_Jt1_XdGfpQ-gxHTuuqi88hnaMMpRs"
         }
       }
     },
