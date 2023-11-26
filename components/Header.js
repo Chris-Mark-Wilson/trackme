@@ -3,7 +3,7 @@ import { View ,Text} from "react-native"
 export const Header = () =>{
     return (
         <View>
-            <Text>Track'em route tracker</Text>
+            <Text style={{ fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold', textDecorationLine: 'underline' }}>Trip tracker</Text>
     </View>
 )    
 }
