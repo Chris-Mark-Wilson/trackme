@@ -9,6 +9,8 @@ export const MyJourneys = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [journeyList, setJourneyList] = useState([])
     const [selectedJourney, setSelectedJourney] = useState(null);
+    const[cursor,setCursor]=useState(null);
+    const[routePoints,setRoutePoints]=useState(null);
     useEffect(() => {
         //focus listener ensures up to date data
         navigation.addListener('focus', () => {
@@ -28,6 +30,16 @@ export const MyJourneys = ({ navigation }) => {
             navigation.removeListener('focus', () => { })
         }
     }, [navigation])
+    useEffect(()=>{
+if(selectedJourney){
+    //copy all blocks into 1 long array
+    setRoutePoints([
+        ...selectedJourney.blocks.reduce((acc, block) => {
+            return [...acc, ...block];
+        }, []),
+    ])
+}
+    },[selectedJourney])
 
 
 
@@ -46,6 +58,16 @@ export const MyJourneys = ({ navigation }) => {
         setSelectedJourney(null);
     }
 
+    const ControlButtons=()=>{
+        return(
+            <View style={styles.controlButtons}>
+                <Pressable onPress={()=>{setCursor(routePoints.filter((point,index)=>point.timestamp<cursor.timestamp&&index<routePoints.length)[0])}}><Text style={styles.controlButton}>{"<"}</Text></Pressable>
+                {/*Have these 2 just change the play speed and have aplay button in the middle that iterates through the routePoints array on a timerspeed set by the arrows*/}
+                <Pressable onPress={()=>{setCursor(routePoints.filter((point,index)=>point.timestamp>cursor.timestamp&&index<routePoints.length)[0])}}><Text style={styles.controlButton}>{">"}</Text></Pressable>
+                </View>
+        )
+    }
+
 
     return isLoading ? (<Text>Loading...</Text>) :
         ((selectedJourney) ?
@@ -58,22 +80,27 @@ export const MyJourneys = ({ navigation }) => {
 
                 >
                     {/* if journey selected show mapview*/}
-                    {selectedJourney.startPoint && (
+                    {selectedJourney.startPoint && cursor.latitude&&(
                         <>
                             <Polyline
-                                coordinates={[
-                                    ...selectedJourney.blocks.reduce((acc, block) => {
-                                        return [...acc, ...block];
-                                    }, []),
-                                ]}
+                                coordinates={routePoints}
                                 strokeWidth={5}
                             />
-                            <Marker coordinate={selectedJourney.startPoint} pinColor="green" />
+                            <Marker title="start" coordinate={selectedJourney.startPoint} pinColor="green" />
+                            <Marker title ="end" coordinate={selectedJourney.endPoint} pinColor="red" />
+                            <Marker title="cursor" coordinate={{ latitude: cursor.latitude, longitude: cursor.longitude }} pinColor="blue" />
 
                         </>)}
                 </MapView>
+                {/**if journey selected show control buttons*/}
                 <Text style={{ position: "absolute", top: 0, left: 10, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Tap map to go back</Text>
+                <View style={styles.info}>
+                    <Text style={styles.description}>Time: {new Date(cursor.timestamp).toLocaleTimeString()}</Text>
+                    <Text style={styles.description}>Latitude: {cursor.latitude}</Text>
+                    <Text style={styles.description}>Longitude: {cursor.longitude}</Text>
 
+                </View>
+                <ControlButtons/>
                 {/* <StatusBar style="auto" /> */}
             </View> ://or if no selected journey view list
             <SafeAreaView style={styles.container}>
@@ -85,6 +112,7 @@ export const MyJourneys = ({ navigation }) => {
                         return (
                             <Pressable onPress={() => {
                                 setSelectedJourney(item);
+                                setCursor({latitude:item.startPoint.latitude,longitude:item.startPoint.longitude,timestamp:item.blocks[0][1].timestamp});
                             }}><View style={styles.listItem}>
                                     <Text style={styles.item}>{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text>
                                     <View style={styles.deleteButton}>
@@ -183,5 +211,49 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         marginLeft: 5,
         marginRight: 5,
+    }
+    ,info:{
+        position: "absolute",
+        top:50,
+        left: 0,
+        height: 100,
+        width: "90%",
+        justifyContent: "center",
+        borderColor: "black",
+        borderWidth: 1,
+        flexDirection: "column",
+        justifyContent: "space-around",
+        alignItems: "center",
+        marginTop: 5,
+        marginBottom: 5,
+        marginLeft: "5%",
+        marginRight: "5%",
+        opacity:1
+
+    },
+    description:{
+        fontSize: 15,
+        textAlign: "center",
+        fontWeight: 'bold',
+        textDecorationLine: 'underline'
+    },
+    controlButtons:{position:"absolute",
+    bottom:50,
+    left:0,
+    height:60,
+    width:"80%",
+    marginLeft:"10%",
+    flexDirection:"row",
+    justifyContent:"space-around",
+    alignItems:"center"
+},
+
+    controlButton:{
+        fontSize:40,
+        borderWidth:2,
+        paddingLeft:15,
+        paddingRight:15,
+        paddingBottom:10,
+        textAlign:"center",
     }
 });
