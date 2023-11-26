@@ -6,6 +6,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, View, StatusBar, Button } from "react-native";
 import { useContext } from "react";
 import { RouteContext } from "../contexts/routeContext";
+import { addJourney } from "../utils/dbApi";
 
 //mport {API_KEY} from '@env';
 
@@ -39,19 +40,7 @@ export const RouteMap = ({ navigation }) => {
         console.log(error, "error in catch");
       });
   }, [counter]);
-  ///set region to current location//////////////////////////
-  // useEffect(()=>{
-  //   if(location.coords){
-  //     setRegion({
-  //       latitude: location.coords.latitude,
-  //       longitude: location.coords.longitude,
-  //       latitudeDelta: 0.025,
-  //       longitudeDelta: 0.025
-  //     })
-  //   }
-  //   console.log("location changed:");
-  // }, [location])
-  //
+
   useEffect(() => {
     if (isMobile) {
       setTimeout(() => {
@@ -116,6 +105,12 @@ export const RouteMap = ({ navigation }) => {
             longitude: location.coords.longitude,
           },
           startTime: Date.now(),
+          region: {
+            latitude: location.coords.latitude,
+            longitude: location.coords.longitude,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          },
           blocks: [],
         };
       });
@@ -139,20 +134,31 @@ export const RouteMap = ({ navigation }) => {
     //stop timer
     setIsMobile(false);
     //store route data in db here....
+addJourney(routeData)
+.then((response)=>{
+  alert("journey saved");
+  console.log(response,"response in route map");
+  //reset start point temp for test
+  setTimeout(() => {
+    setRouteData((oldData) => {
+      return {
+        ...oldData,
+        startPoint: null,
+        startTime: null,
+        endpoint: null,
+        endTime: null,
+        blocks: [],
+      };
+    });
+  }, 3000);
 
-    //reset start point temp for test
-    setTimeout(() => {
-      setRouteData((oldData) => {
-        return {
-          ...oldData,
-          startPoint: null,
-          startTime: null,
-          endpoint: null,
-          endTime: null,
-          blocks: [],
-        };
-      });
-    }, 3000);
+})
+.catch((error)=>{
+  alert("error in saving journey");
+  console.log(error,"error in route map");
+}
+)
+    
   };
   //press on map/////////////////////////////////////////////
   const handleMapPress = (e) => {
