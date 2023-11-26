@@ -37,7 +37,9 @@ export const RouteMap = ({ navigation }) => {
       })
     
       .catch((error) => {
+        alert(error);
         console.log(error, "error in catch");
+        setCounter(0)
       });
   }, [counter]);
 
@@ -51,6 +53,7 @@ export const RouteMap = ({ navigation }) => {
       //stop pressed
       setCounter(0);
       if (counter != 0) {
+        ///log out info, for testing
         console.log("start point", routeData.startPoint);
         routeData.blocks.forEach((block) => {
           block.forEach((point) => {
@@ -77,6 +80,7 @@ export const RouteMap = ({ navigation }) => {
           newData.blocks[oldData.blocks.length - 1].push({
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
+            timestamp: Date.now(),
           });
         } else {
           //if there is no block or the last block is full
@@ -84,6 +88,7 @@ export const RouteMap = ({ navigation }) => {
             {
               latitude: location.coords.latitude,
               longitude: location.coords.longitude,
+              timestamp: Date.now(),
             },
           ]);
         }
@@ -108,8 +113,8 @@ export const RouteMap = ({ navigation }) => {
           region: {
             latitude: location.coords.latitude,
             longitude: location.coords.longitude,
-            latitudeDelta: 0.05,
-            longitudeDelta: 0.05,
+            latitudeDelta: 0.005,
+            longitudeDelta: 0.005,
           },
           blocks: [],
         };
@@ -122,19 +127,19 @@ export const RouteMap = ({ navigation }) => {
 
   //stop journey////////////////////////////////////////////
   const handleStopPress = () => {
-    //set endpoint
-    setRouteData({
-      ...routeData,
-      endPoint: {
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-      },
-      endTime: Date.now(),
-    });
+     console.log("pressed stop");   
     //stop timer
     setIsMobile(false);
     //store route data in db here....
-addJourney(routeData)
+    //add endpoint and endtime to routeData
+addJourney({
+  ...routeData,
+  endPoint: {
+    latitude: location.coords.latitude,
+    longitude: location.coords.longitude,
+  },
+  endTime: Date.now(),
+})
 .then((response)=>{
   alert("journey saved");
   console.log(response,"response in route map");
@@ -213,7 +218,7 @@ addJourney(routeData)
           </>
         )}
       </MapView>
-      {!isMobile && (
+      {!isMobile && location.coords&&(
         <View style={styles.startButton}>
           <Button title="Start" onPress={handleStartPress} />
         </View>
