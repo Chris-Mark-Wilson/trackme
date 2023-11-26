@@ -22,7 +22,12 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "com.chrismark_wilson.trackme"
+      "package": "com.chrismark_wilson.trackme",
+      "config":{
+        "googleMaps":{
+          "apiKey":"replace this with the api key from .env"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
