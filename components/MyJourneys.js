@@ -47,7 +47,7 @@ if(selectedJourney){
 
 useEffect(()=>{
     if(isMobile){
-if(index<routePoints.length-1){
+if(index<routePoints.length-2){
     setTimeout(()=>{
         setIndex(index+1);
         setCursor(routePoints[index]);
@@ -89,9 +89,12 @@ if(index<routePoints.length-1){
                  <Pressable onPress={()=>{setIsMobile(true);setSpeed(1000)}}><Text style={styles.controlButton}>{">"}</Text></Pressable>
                 <Pressable onPress={()=>{setSpeed((oSpeed)=>{
                     if(oSpeed>=100){
-                return oSpeed-100}})}}><Text style={styles.controlButton}>{String.fromCharCode(187)}</Text></Pressable>
+                return oSpeed-100}else return oSpeed})}}><Text style={styles.controlButton}>{String.fromCharCode(187)}</Text></Pressable>
                 </View>
         )
+    }
+    const logArgs=(...args)=>{
+        console.log(args);
     }
     /////////////INSTALLED GEOLIB TO GET DISTANCE BETWEEN POINTS AND USE THAT TO SET SPEED
     /////////////////////////////LAST THING I TOUCHED BEFORE IT BROKE SOMETHING IS NULL FOR SOME REASON^^^^^^^
@@ -109,7 +112,7 @@ if(index<routePoints.length-1){
                 >
                     {/* if journey selected show mapview*/}
                   
-                    {selectedJourney.startPoint && routePoints&&(
+                    {selectedJourney.startPoint && routePoints[index]&&(
                         <>
                             <Polyline
                                 coordinates={[...routePoints]}
@@ -127,11 +130,13 @@ if(index<routePoints.length-1){
                     <Text style={styles.description}>Time: {new Date(cursor.timestamp).toLocaleTimeString()}</Text>
                     <Text style={styles.description}>Latitude: {cursor.latitude}</Text>
                     <Text style={styles.description}>Longitude: {cursor.longitude}</Text>
-
+                 {routePoints[index]&&
+                    <Text style={styles.description}>Speed: {((getDistance(cursor,routePoints[index+1]))/((routePoints[index+1].timestamp-cursor.timestamp)/1000)).toFixed(2)} kph </Text>
+                 }
                 </View>
                 <ControlButtons/>
                 {/* //display speed if mobile */}
-                {isMobile&&<Text style={{ position: "absolute", bottom: 10, left: 30, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Speed: {(1000/speed).toFixed(2)} x {speed} </Text>}
+                {isMobile&&<Text style={{ position: "absolute", bottom: 10, left: 30, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Speed: {(1000/speed).toFixed(2)} x </Text>}
              
             </View> ://or if no selected journey view list
             <SafeAreaView style={styles.container}>
