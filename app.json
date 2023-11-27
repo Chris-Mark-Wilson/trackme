@@ -25,7 +25,7 @@
       "package": "com.chrismark_wilson.trackme",
       "config":{
         "googleMaps":{
-          "apiKey":"API KEY goes here before build"
+          "apiKey":"API KEY GOES HERE FOR BUILD"
         }
       }
     },
