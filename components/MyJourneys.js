@@ -124,16 +124,50 @@ if(index<routePoints.length-2){
 
                         </>)}
                 </MapView>
-                {/**if journey selected show control buttons*/}
+              
                 <Text style={{ position: "absolute", top: 0, left: 10, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Tap map to go back</Text>
-                <View style={styles.info}>
-                    <Text style={styles.description}>Time: {new Date(cursor.timestamp).toLocaleTimeString()}</Text>
-                    <Text style={styles.description}>Latitude: {cursor.latitude}</Text>
-                    <Text style={styles.description}>Longitude: {cursor.longitude}</Text>
-                 {routePoints[index]&&
-                    <Text style={styles.description}>Speed: {((getDistance(cursor,routePoints[index+1]))/((routePoints[index+1].timestamp-cursor.timestamp)/1000)).toFixed(2)} kph </Text>
+
+                {/**info box */}
+
+                {routePoints[index] && (//if route points exist show info
+                    <View style={styles.info}>
+                        {/* display date of cursor point */}
+                        <Text style={styles.description}>Date: {new Date(cursor.timestamp).toLocaleDateString()}</Text>
+
+                        {/* add up distances between points*/}
+                        <Text style={styles.description}>Total Distance: {((
+                            routePoints.reduce((acc, point, index, array) => {
+                                if (index < array.length - 1) {
+                                    acc += getDistance(point, array[index + 1]);
+                                }
+                                return acc;
+                            }, 0)) * 0.000621371).toFixed(2)} miles</Text>
+
+                            {/* display time of cursor point */}
+                        <Text style={isMobile?{...styles.description,color:"blue",borderWidth:1}:{...styles.description,color:"black"}}>Time: {new Date(cursor.timestamp).toLocaleTimeString()}</Text>
+
+                        {/*add up distance to cursor */}
+                        <Text style={styles.description}>Distance covered: {((
+                            routePoints.slice(0, index + 1).reduce((acc, point, index, array) => {
+                                if (index < array.length - 1) {
+                                    acc += getDistance(point, array[index + 1]);
+                                }
+                                return acc;
+                            }, 0)) * 0.000621371).toFixed(2)} miles</Text>
+
+                        {/*Calculate and display local speed */}
+                        <Text style={styles.description}>Speed: {(((getDistance(cursor, routePoints[index + 1])) / ((routePoints[index + 1].timestamp - cursor.timestamp) / 1000)) * 2.23694).toFixed(2)} mph </Text>
+
+                        {/* calculate and display average journey speed**/}
+                        <Text style={styles.description}>Average trip speed: {(((routePoints.reduce((acc, point, index, array) => {
+                            if (index < array.length - 1) {
+                                acc += getDistance(point, array[index + 1]);
+                            }
+                            return acc;
+                        }, 0)) / ((selectedJourney.endTime - selectedJourney.startTime) / 1000)) * 2.23694).toFixed(2)} mph </Text>
+                    </View>
+                 )
                  }
-                </View>
                 <ControlButtons/>
                 {/* //display speed if mobile */}
                 {isMobile&&<Text style={{ position: "absolute", bottom: 10, left: 30, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Speed: {(1000/speed).toFixed(2)} x </Text>}
@@ -252,7 +286,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         top:50,
         left: 0,
-        height: 100,
+        height: 150,
         width: "90%",
         justifyContent: "center",
         borderColor: "black",
@@ -271,7 +305,7 @@ const styles = StyleSheet.create({
         fontSize: 15,
         textAlign: "center",
         fontWeight: 'bold',
-        textDecorationLine: 'underline'
+     
     },
     controlButtons:{position:"absolute",
     bottom:50,
