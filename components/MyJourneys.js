@@ -3,6 +3,7 @@ import { getAllJourneys, deleteJourney, clearAllJourneys } from '../utils/dbApi'
 import { View, Text, StyleSheet, SafeAreaView, FlatList, Button, Pressable } from 'react-native';
 import MapView, { Polyline, Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
+import {getDistance} from 'geolib';
 
 
 export const MyJourneys = ({ navigation }) => {
@@ -10,7 +11,10 @@ export const MyJourneys = ({ navigation }) => {
     const [journeyList, setJourneyList] = useState([])
     const [selectedJourney, setSelectedJourney] = useState(null);
     const[cursor,setCursor]=useState(null);
-    const[routePoints,setRoutePoints]=useState(null);
+    const[routePoints,setRoutePoints]=useState([]);
+    const[index,setIndex]=useState(0);
+    const [speed,setSpeed]=useState(1000);
+    const [isMobile, setIsMobile] = useState(false);
     useEffect(() => {
         //focus listener ensures up to date data
         navigation.addListener('focus', () => {
@@ -41,6 +45,23 @@ if(selectedJourney){
 }
     },[selectedJourney])
 
+useEffect(()=>{
+    if(isMobile){
+if(index<routePoints.length-2){
+    setTimeout(()=>{
+        setIndex(index+1);
+        setCursor(routePoints[index]);
+    },speed)
+
+    }
+    else{
+        setCursor(routePoints[0])
+        setIndex(0);
+        setIsMobile(false);
+    }
+}
+  
+},[index,isMobile])
 
 
     const MyItemSeparator = () => {
@@ -61,12 +82,22 @@ if(selectedJourney){
     const ControlButtons=()=>{
         return(
             <View style={styles.controlButtons}>
-                <Pressable onPress={()=>{setCursor(routePoints.filter((point,index)=>point.timestamp<cursor.timestamp&&index<routePoints.length)[0])}}><Text style={styles.controlButton}>{"<"}</Text></Pressable>
+                <Pressable onPress={()=>{setSpeed((oSpeed)=>{
+                    if(oSpeed<1000){return oSpeed+100}else return oSpeed})}}><Text style={styles.controlButtonReversed}>{String.fromCharCode(187)}</Text></Pressable>
                 {/*Have these 2 just change the play speed and have aplay button in the middle that iterates through the routePoints array on a timerspeed set by the arrows*/}
-                <Pressable onPress={()=>{setCursor(routePoints.filter((point,index)=>point.timestamp>cursor.timestamp&&index<routePoints.length)[0])}}><Text style={styles.controlButton}>{">"}</Text></Pressable>
+                 <Pressable onPress={()=>{setIsMobile(false)}}><Text style={styles.controlButton}>{"||"}</Text></Pressable> 
+                 <Pressable onPress={()=>{setIsMobile(true);setSpeed(1000)}}><Text style={styles.controlButton}>{">"}</Text></Pressable>
+                <Pressable onPress={()=>{setSpeed((oSpeed)=>{
+                    if(oSpeed>=100){
+                return oSpeed-100}else return oSpeed})}}><Text style={styles.controlButton}>{String.fromCharCode(187)}</Text></Pressable>
                 </View>
         )
     }
+    const logArgs=(...args)=>{
+        console.log(args);
+    }
+    /////////////INSTALLED GEOLIB TO GET DISTANCE BETWEEN POINTS AND USE THAT TO SET SPEED
+    /////////////////////////////LAST THING I TOUCHED BEFORE IT BROKE SOMETHING IS NULL FOR SOME REASON^^^^^^^
 
 
     return isLoading ? (<Text>Loading...</Text>) :
@@ -80,15 +111,16 @@ if(selectedJourney){
 
                 >
                     {/* if journey selected show mapview*/}
-                    {selectedJourney.startPoint && cursor.latitude&&(
+                  
+                    {selectedJourney.startPoint && routePoints[index]&&(
                         <>
                             <Polyline
-                                coordinates={routePoints}
-                                strokeWidth={5}
+                                coordinates={[...routePoints]}
+                                strokeWidth={2}
                             />
                             <Marker title="start" coordinate={selectedJourney.startPoint} pinColor="green" />
                             <Marker title ="end" coordinate={selectedJourney.endPoint} pinColor="red" />
-                            <Marker title="cursor" coordinate={{ latitude: cursor.latitude, longitude: cursor.longitude }} pinColor="blue" />
+                            <Marker title="cursor" coordinate={routePoints[index] } pinColor="blue" />
 
                         </>)}
                 </MapView>
@@ -98,10 +130,14 @@ if(selectedJourney){
                     <Text style={styles.description}>Time: {new Date(cursor.timestamp).toLocaleTimeString()}</Text>
                     <Text style={styles.description}>Latitude: {cursor.latitude}</Text>
                     <Text style={styles.description}>Longitude: {cursor.longitude}</Text>
-
+                 {routePoints[index]&&
+                    <Text style={styles.description}>Speed: {((getDistance(cursor,routePoints[index+1]))/((routePoints[index+1].timestamp-cursor.timestamp)/1000)).toFixed(2)} kph </Text>
+                 }
                 </View>
                 <ControlButtons/>
-                {/* <StatusBar style="auto" /> */}
+                {/* //display speed if mobile */}
+                {isMobile&&<Text style={{ position: "absolute", bottom: 10, left: 30, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Speed: {(1000/speed).toFixed(2)} x </Text>}
+             
             </View> ://or if no selected journey view list
             <SafeAreaView style={styles.container}>
                 <FlatList
@@ -255,5 +291,14 @@ const styles = StyleSheet.create({
         paddingRight:15,
         paddingBottom:10,
         textAlign:"center",
+    },
+    controlButtonReversed:{
+        fontSize:40,
+        borderWidth:2,
+        paddingLeft:15,
+        paddingRight:15,
+        paddingBottom:15,
+        textAlign:"center",
+        transform:[{rotate:"180deg"}]
     }
 });
