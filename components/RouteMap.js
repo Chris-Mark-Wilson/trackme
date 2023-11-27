@@ -25,7 +25,7 @@ export const RouteMap = ({ navigation }) => {
     getLocation()
       .then((location) => {
         setLocation(location);
-        console.log("got location", location.coords);
+       
         if(!region){
         setRegion({
           latitude: location.coords.latitude,
@@ -47,22 +47,23 @@ export const RouteMap = ({ navigation }) => {
     if (isMobile) {
       setTimeout(() => {
         setCounter((counter) => counter + 1);
-        console.log("counter:", counter);
+  
       }, timerInterval);
     } else {
       //stop pressed
       setCounter(0);
-      if (counter != 0) {
-        ///log out info, for testing
-        console.log("start point", routeData.startPoint);
-        routeData.blocks.forEach((block) => {
-          block.forEach((point) => {
-            console.log("waypoint", point);
-          });
-          console.log("block end");
-        });
-        console.log("end point", routeData.endPoint);
-      }
+    //   if (counter != 0) {
+    //     ///log out info, for testing
+    //     console.log("start point", routeData.startPoint);
+    //     routeData.blocks.forEach((block) => {
+    //       block.forEach((point) => {
+    //         console.log("waypoint", point);
+    //       });
+    //       console.log("block end");
+    //     });
+    //     console.log("end point", routeData.endPoint);
+    //   }
+    // }
     }
   }, [counter, isMobile]);
 
@@ -99,7 +100,7 @@ export const RouteMap = ({ navigation }) => {
 
   //start journey//////////////////////////////////////////
   const handleStartPress = (e) => {
-    console.log("pressed start - event:", location.coords);
+  ;
     if (location.coords) {
       //set start point and clear waypoint blocks
       setRouteData((oldData) => {
@@ -127,7 +128,7 @@ export const RouteMap = ({ navigation }) => {
 
   //stop journey////////////////////////////////////////////
   const handleStopPress = () => {
-     console.log("pressed stop");   
+       
     //stop timer
     setIsMobile(false);
     //store route data in db here....
@@ -142,8 +143,8 @@ addJourney({
 })
 .then((response)=>{
   alert("journey saved");
-  console.log(response,"response in route map");
-  //reset start point temp for test
+ 
+   //reset start point temp for test
   setTimeout(() => {
     setRouteData((oldData) => {
       return {
@@ -168,7 +169,7 @@ addJourney({
   };
   //press on map/////////////////////////////////////////////
   const handleMapPress = (e) => {
-    console.log("pressed map at:", e.nativeEvent.coordinate);
+        // console.log("pressed map at:", e.nativeEvent.coordinate);
   };
   //render///////////////////////////////////////////////////
   return (
@@ -196,25 +197,7 @@ addJourney({
             />
             <Marker coordinate={routeData.startPoint} pinColor="green" />
 
-            {/* {
-            routeData.blocks.map((block, index) => {
-              //each block is a 'route' with a start and end point
-              //the rest of the points in between are waypoints
-              // <MapViewDirections
-              //   key={index}
-              //   origin={block[0]}
-              
-              //   {...(block.length > 1 && { waypoints: block.slice(1, block.length - 1) })
-              //   }
-               
-              //   destination={block[block.length - 1]}
-              //   apikey={API_KEY}
-              //   strokeWidth={4}
-              //   strokeColor="#248DFF"
-              //   mode="WALKING"
-              // />
-            })
-          } */}
+           
           </>
         )}
       </MapView>

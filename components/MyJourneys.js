@@ -47,6 +47,7 @@ if(selectedJourney){
 
 useEffect(()=>{
     if(isMobile){
+      
 if(index<routePoints.length-2){
     setTimeout(()=>{
         setIndex(index+1);
@@ -59,8 +60,8 @@ if(index<routePoints.length-2){
         setIndex(0);
         setIsMobile(false);
     }
+
 }
-  
 },[index,isMobile])
 
 
@@ -82,12 +83,20 @@ if(index<routePoints.length-2){
     const ControlButtons=()=>{
         return(
             <View style={styles.controlButtons}>
-                <Pressable onPress={()=>{setSpeed((oSpeed)=>{
+                <Pressable onPressIn={()=>{setSpeed((oSpeed)=>{
                     if(oSpeed<1000){return oSpeed+100}else return oSpeed})}}><Text style={styles.controlButtonReversed}>{String.fromCharCode(187)}</Text></Pressable>
                 {/*Have these 2 just change the play speed and have aplay button in the middle that iterates through the routePoints array on a timerspeed set by the arrows*/}
-                 <Pressable onPress={()=>{setIsMobile(false)}}><Text style={styles.controlButton}>{"||"}</Text></Pressable> 
-                 <Pressable onPress={()=>{setIsMobile(true);setSpeed(1000)}}><Text style={styles.controlButton}>{">"}</Text></Pressable>
-                <Pressable onPress={()=>{setSpeed((oSpeed)=>{
+                 <Pressable onPressIn={()=>{
+                    requestAnimationFrame(()=>{
+                    if(isMobile){
+                        setIsMobile(false)
+                    }else{setIndex(0);
+                    setCursor(routePoints[0]);
+                    }
+                    })
+                }}><Text style={styles.controlButton}>{isMobile?"||":String.fromCharCode(61)}</Text></Pressable> 
+                 <Pressable onPressIn={()=>{setIsMobile(true);setSpeed(1000)}}><Text style={styles.controlButton}>{">"}</Text></Pressable>
+                <Pressable onPressIn={()=>{setSpeed((oSpeed)=>{
                     if(oSpeed>=100){
                 return oSpeed-100}else return oSpeed})}}><Text style={styles.controlButton}>{String.fromCharCode(187)}</Text></Pressable>
                 </View>
@@ -96,10 +105,7 @@ if(index<routePoints.length-2){
     const logArgs=(...args)=>{
         console.log(args);
     }
-    /////////////INSTALLED GEOLIB TO GET DISTANCE BETWEEN POINTS AND USE THAT TO SET SPEED
-    /////////////////////////////LAST THING I TOUCHED BEFORE IT BROKE SOMETHING IS NULL FOR SOME REASON^^^^^^^
-
-
+   
     return isLoading ? (<Text>Loading...</Text>) :
         ((selectedJourney) ?
             <View style={styles.container}>
@@ -169,7 +175,7 @@ if(index<routePoints.length-2){
                  )
                  }
                 <ControlButtons/>
-                {/* //display speed if mobile */}
+                {/* //display speed multipler if mobile */}
                 {isMobile&&<Text style={{ position: "absolute", bottom: 10, left: 30, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Speed: {(1000/speed).toFixed(2)} x </Text>}
              
             </View> ://or if no selected journey view list
@@ -327,11 +333,13 @@ const styles = StyleSheet.create({
         textAlign:"center",
     },
     controlButtonReversed:{
+        
         fontSize:40,
         borderWidth:2,
+        paddingTop:0,
         paddingLeft:15,
         paddingRight:15,
-        paddingBottom:15,
+        paddingBottom:10,
         textAlign:"center",
         transform:[{rotate:"180deg"}]
     }
