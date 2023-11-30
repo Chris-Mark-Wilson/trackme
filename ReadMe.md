@@ -3,7 +3,7 @@
 
 clone repo, npm install..
 
-run a build with eas build -p android --profile preview
+run a build with "eas build -p android --profile preview"
 
 this will give you the app identifier e.g. (com.trackMe)
 and an sha1 key (shown in build credentials)

@@ -5,7 +5,7 @@ export const getAllJourneys = async () => {
       
         const journeys = await AsyncStorage.getItem('journeys');
         const myJourneys = JSON.parse(journeys);
-        console.log(myJourneys,"journeys in api");
+        // console.log(myJourneys,"journeys in api");
         return myJourneys;
     } catch (error) {
         console.log(error,"error in api get all journeys");
@@ -16,7 +16,7 @@ export const getAllJourneys = async () => {
 export const addJourney = async (journey) => {
     try {
         let myJourneys = await getAllJourneys();
-        console.log(myJourneys,"my journeys in add journey");
+        // console.log(myJourneys,"my journeys in add journey");
         let newJourneys = myJourneys ? [...myJourneys] : []//create new array if myJourneys is null
         newJourneys.push(journey);
         await AsyncStorage.setItem('journeys', JSON.stringify(newJourneys));

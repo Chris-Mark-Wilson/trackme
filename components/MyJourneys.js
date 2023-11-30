@@ -4,9 +4,15 @@ import { View, Text, StyleSheet, SafeAreaView, FlatList, Button, Pressable } fro
 import MapView, { Polyline, Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import {getDistance} from 'geolib';
+import { Dimensions } from 'react-native';
+import  VerticalSlider  from 'rn-vertical-slider';
 
 
 export const MyJourneys = ({ navigation }) => {
+    const windowWidth = Dimensions.get('window').width;
+    const windowHeight = Dimensions.get('window').height;
+    const [ASPECT_RATIO, setASPECT_RATIO] = useState(windowWidth / windowHeight);
+    const [zoom, setZoom] = useState(0.01);
     const [isLoading, setIsLoading] = useState(true);
     const [journeyList, setJourneyList] = useState([])
     const [selectedJourney, setSelectedJourney] = useState(null);
@@ -23,8 +29,10 @@ export const MyJourneys = ({ navigation }) => {
             getAllJourneys()
                 .then((journeys) => {
                     setJourneyList(journeys);
-                    console.log(journeys, "journeys in my journeys");
-                    setIsLoading(false);
+                    console.log("got all journeys");
+                 console.log(ASPECT_RATIO,"aspect ratio");
+                  setIsLoading(false);
+                   
                 })
                 .catch((error) => {
                     console.log(error, "error in my journeys");
@@ -77,6 +85,7 @@ if(index<routePoints.length-2){
         );
     };
     const handleMapPress = () => {
+        setIsMobile(false);
         setSelectedJourney(null);
     }
 
@@ -107,13 +116,17 @@ if(index<routePoints.length-2){
     }
    
     return isLoading ? (<Text>Loading...</Text>) :
-        ((selectedJourney) ?
+        ((selectedJourney && cursor.latitude)?
             <View style={styles.container}>
                 <MapView
                     onPress={handleMapPress}
                     style={styles.map}
                     provider={PROVIDER_GOOGLE}
-                    region={selectedJourney.region}
+                    region={{latitude:cursor.latitude,longitude:cursor.longitude,
+                      
+                    latitudeDelta: zoom,
+                        longitudeDelta: zoom}}
+                        // onRegionChange={(newRegion)=>{setZoom(newRegion.latitudeDelta)}}
 
                 >
                     {/* if journey selected show mapview*/}
@@ -130,7 +143,25 @@ if(index<routePoints.length-2){
 
                         </>)}
                 </MapView>
-              
+              {/** vertical slider for zoom level */}
+              <VerticalSlider
+              style={styles.verticalSlider}
+      value={zoom}
+      onChange={(value) => setZoom(value)}
+      height={200}
+      width={40}
+      step={0.005}
+      min={0}
+      max={1}
+      borderRadius={5}
+      minimumTrackTintColor="#2979FF"
+      maximumTrackTintColor="#D1D1D6"
+      showBallIndicator
+      ballIndicatorColor="#2979FF"
+      ballIndicatorTextColor="#fff"
+      ballIndicatorWidth={80}
+      ballIndicatorHeight={40}
+    />
                 <Text style={{ position: "absolute", top: 0, left: 10, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Tap map to go back</Text>
 
                 {/**info box */}
@@ -187,8 +218,8 @@ if(index<routePoints.length-2){
 
                         return (
                             <Pressable onPress={() => {
-                                setSelectedJourney(item);
                                 setCursor({latitude:item.startPoint.latitude,longitude:item.startPoint.longitude,timestamp:item.blocks[0][1].timestamp});
+                                setSelectedJourney(item);
                             }}><View style={styles.listItem}>
                                     <Text style={styles.item}>{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text>
                                     <View style={styles.deleteButton}>
@@ -342,5 +373,13 @@ const styles = StyleSheet.create({
         paddingBottom:10,
         textAlign:"center",
         transform:[{rotate:"180deg"}]
+    },
+    verticalSlider:{
+        position:"absolute",
+        top:0,
+        left:0,
+        height:"100%",
+        width:40,
+        // zIndex:100
     }
 });

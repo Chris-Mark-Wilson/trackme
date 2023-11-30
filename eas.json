@@ -15,11 +15,10 @@
     },
     "production": {
       "android":{
-        "buildType":"apk"
+        "buildType":"app-bundle"
       }
     }
   },
   "submit": {
-    "production": {}
   }
 }
