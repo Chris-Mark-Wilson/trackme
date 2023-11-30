@@ -5,7 +5,9 @@ import MapView, { Polyline, Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import {getDistance} from 'geolib';
 import { Dimensions } from 'react-native';
-import  VerticalSlider  from 'rn-vertical-slider';
+import VerticalSlider from 'rn-vertical-slider';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ControlButtons } from './ControlButtons';
 
 
 export const MyJourneys = ({ navigation }) => {
@@ -16,10 +18,10 @@ export const MyJourneys = ({ navigation }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [journeyList, setJourneyList] = useState([])
     const [selectedJourney, setSelectedJourney] = useState(null);
-    const[cursor,setCursor]=useState(null);
-    const[routePoints,setRoutePoints]=useState([]);
-    const[index,setIndex]=useState(0);
-    const [speed,setSpeed]=useState(1000);
+    const [cursor, setCursor] = useState(null);
+    const [routePoints, setRoutePoints] = useState([]);
+    const [index, setIndex] = useState(0);
+    const [speed, setSpeed] = useState(1000);
     const [isMobile, setIsMobile] = useState(false);
     useEffect(() => {
         //focus listener ensures up to date data
@@ -30,8 +32,8 @@ export const MyJourneys = ({ navigation }) => {
                 .then((journeys) => {
                     setJourneyList(journeys);
                     console.log("got all journeys");
-                 console.log(ASPECT_RATIO,"aspect ratio");
-                  setIsLoading(false);
+                    console.log(ASPECT_RATIO, "aspect ratio");
+                    setIsLoading(false);
                    
                 })
                 .catch((error) => {
@@ -42,35 +44,35 @@ export const MyJourneys = ({ navigation }) => {
             navigation.removeListener('focus', () => { })
         }
     }, [navigation])
-    useEffect(()=>{
-if(selectedJourney){
-    //copy all blocks into 1 long array
-    setRoutePoints([
-        ...selectedJourney.blocks.reduce((acc, block) => {
-            return [...acc, ...block];
-        }, []),
-    ])
-}
-    },[selectedJourney])
+    useEffect(() => {
+        if (selectedJourney) {
+            //copy all blocks into 1 long array
+            setRoutePoints([
+                ...selectedJourney.blocks.reduce((acc, block) => {
+                    return [...acc, ...block];
+                }, []),
+            ])
+        }
+    }, [selectedJourney])
 
-useEffect(()=>{
-    if(isMobile){
+    useEffect(() => {
+        if (isMobile) {
       
-if(index<routePoints.length-2){
-    setTimeout(()=>{
-        setIndex(index+1);
-        setCursor(routePoints[index]);
-    },speed)
+            if (index < routePoints.length - 2) {
+                setTimeout(() => {
+                    setIndex(index + 1);
+                    setCursor(routePoints[index]);
+                }, speed)
 
-    }
-    else{
-        setCursor(routePoints[0])
-        setIndex(0);
-        setIsMobile(false);
-    }
+            }
+            else {
+                setCursor(routePoints[0])
+                setIndex(0);
+                setIsMobile(false);
+            }
 
-}
-},[index,isMobile])
+        }
+    }, [index, isMobile])
 
 
     const MyItemSeparator = () => {
@@ -89,187 +91,297 @@ if(index<routePoints.length-2){
         setSelectedJourney(null);
     }
 
-    const ControlButtons=()=>{
-        return(
-            <View style={styles.controlButtons}>
-                <Pressable onPressIn={()=>{setSpeed((oSpeed)=>{
-                    if(oSpeed<1000){return oSpeed+100}else return oSpeed})}}><Text style={styles.controlButtonReversed}>{String.fromCharCode(187)}</Text></Pressable>
-                {/*Have these 2 just change the play speed and have aplay button in the middle that iterates through the routePoints array on a timerspeed set by the arrows*/}
-                 <Pressable onPressIn={()=>{
-                    requestAnimationFrame(()=>{
-                    if(isMobile){
-                        setIsMobile(false)
-                    }else{setIndex(0);
-                    setCursor(routePoints[0]);
-                    }
-                    })
-                }}><Text style={styles.controlButton}>{isMobile?"||":String.fromCharCode(61)}</Text></Pressable> 
-                 <Pressable onPressIn={()=>{setIsMobile(true);setSpeed(1000)}}><Text style={styles.controlButton}>{">"}</Text></Pressable>
-                <Pressable onPressIn={()=>{setSpeed((oSpeed)=>{
-                    if(oSpeed>=100){
-                return oSpeed-100}else return oSpeed})}}><Text style={styles.controlButton}>{String.fromCharCode(187)}</Text></Pressable>
-                </View>
-        )
-    }
-    const logArgs=(...args)=>{
+    
+    const logArgs = (...args) => {
         console.log(args);
     }
    
-    return isLoading ? (<Text>Loading...</Text>) :
-        ((selectedJourney && cursor.latitude)?
-            <View style={styles.container}>
-                <MapView
-                    onPress={handleMapPress}
-                    style={styles.map}
-                    provider={PROVIDER_GOOGLE}
-                    region={{latitude:cursor.latitude,longitude:cursor.longitude,
-                      
-                    latitudeDelta: zoom,
-                        longitudeDelta: zoom}}
-                        // onRegionChange={(newRegion)=>{setZoom(newRegion.latitudeDelta)}}
+    return isLoading ? (
+        //////////////////////////////////////////////////////////////////////////////////////////////////
+      <Text>Loading...</Text>
+    ) : selectedJourney && cursor.latitude ? (
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        {/**needed for rn-vertical-slider */}
+        <View style={styles.container}>
+          <MapView
+            onPress={handleMapPress}
+            style={styles.map}
+            provider={PROVIDER_GOOGLE}
+            region={{
+              latitude: cursor.latitude,
+              longitude: cursor.longitude,
 
-                >
-                    {/* if journey selected show mapview*/}
-                  
-                    {selectedJourney.startPoint && routePoints[index]&&(
-                        <>
-                            <Polyline
-                                coordinates={[...routePoints]}
-                                strokeWidth={2}
-                            />
-                            <Marker title="start" coordinate={selectedJourney.startPoint} pinColor="green" />
-                            <Marker title ="end" coordinate={selectedJourney.endPoint} pinColor="red" />
-                            <Marker title="cursor" coordinate={routePoints[index] } pinColor="blue" />
+              latitudeDelta: zoom,
+              longitudeDelta: zoom,
+            }}
+            onRegionChange={(newRegion)=>{console.log(zoom)}}
+          >
+            {/* if journey selected show mapview*/}
 
-                        </>)}
-                </MapView>
-              {/** vertical slider for zoom level */}
-              <VerticalSlider
-              style={styles.verticalSlider}
-      value={zoom}
-      onChange={(value) => setZoom(value)}
-      height={200}
-      width={40}
-      step={0.005}
-      min={0}
-      max={1}
-      borderRadius={5}
-      minimumTrackTintColor="#2979FF"
-      maximumTrackTintColor="#D1D1D6"
-      showBallIndicator
-      ballIndicatorColor="#2979FF"
-      ballIndicatorTextColor="#fff"
-      ballIndicatorWidth={80}
-      ballIndicatorHeight={40}
-    />
-                <Text style={{ position: "absolute", top: 0, left: 10, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Tap map to go back</Text>
-
-                {/**info box */}
-
-                {routePoints[index] && (//if route points exist show info
-                    <View style={styles.info}>
-                        {/* display date of cursor point */}
-                        <Text style={styles.description}>Date: {new Date(cursor.timestamp).toLocaleDateString()}</Text>
-
-                        {/* add up distances between points*/}
-                        <Text style={styles.description}>Total Distance: {((
-                            routePoints.reduce((acc, point, index, array) => {
-                                if (index < array.length - 1) {
-                                    acc += getDistance(point, array[index + 1]);
-                                }
-                                return acc;
-                            }, 0)) * 0.000621371).toFixed(2)} miles</Text>
-
-                            {/* display time of cursor point */}
-                        <Text style={isMobile?{...styles.description,color:"blue",borderWidth:1}:{...styles.description,color:"black"}}>Time: {new Date(cursor.timestamp).toLocaleTimeString()}</Text>
-
-                        {/*add up distance to cursor */}
-                        <Text style={styles.description}>Distance covered: {((
-                            routePoints.slice(0, index + 1).reduce((acc, point, index, array) => {
-                                if (index < array.length - 1) {
-                                    acc += getDistance(point, array[index + 1]);
-                                }
-                                return acc;
-                            }, 0)) * 0.000621371).toFixed(2)} miles</Text>
-
-                        {/*Calculate and display local speed */}
-                        <Text style={styles.description}>Speed: {(((getDistance(cursor, routePoints[index + 1])) / ((routePoints[index + 1].timestamp - cursor.timestamp) / 1000)) * 2.23694).toFixed(2)} mph </Text>
-
-                        {/* calculate and display average journey speed**/}
-                        <Text style={styles.description}>Average trip speed: {(((routePoints.reduce((acc, point, index, array) => {
-                            if (index < array.length - 1) {
-                                acc += getDistance(point, array[index + 1]);
-                            }
-                            return acc;
-                        }, 0)) / ((selectedJourney.endTime - selectedJourney.startTime) / 1000)) * 2.23694).toFixed(2)} mph </Text>
-                    </View>
-                 )
-                 }
-                <ControlButtons/>
-                {/* //display speed multipler if mobile */}
-                {isMobile&&<Text style={{ position: "absolute", bottom: 10, left: 30, fontSize: 20, textAlign: "center", marginTop: 20, fontWeight: 'bold' }}>Speed: {(1000/speed).toFixed(2)} x </Text>}
-             
-            </View> ://or if no selected journey view list
-            <SafeAreaView style={styles.container}>
-                <FlatList
-                    data={journeyList}
-                    renderItem={({ item }) => {
-                        const date = new Date(item.startTime);
-
-                        return (
-                            <Pressable onPress={() => {
-                                setCursor({latitude:item.startPoint.latitude,longitude:item.startPoint.longitude,timestamp:item.blocks[0][1].timestamp});
-                                setSelectedJourney(item);
-                            }}><View style={styles.listItem}>
-                                    <Text style={styles.item}>{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text>
-                                    <View style={styles.deleteButton}>
-                                        <Button color={"red"} title="Delete" onPress={() => {
-                                            deleteJourney(item.startTime);
-                                            setJourneyList(journeyList.filter((journey) => journey.startTime !== item.startTime));
-                                        }
-                                        } />
-                                    </View>
-                                </View>
-                            </Pressable>
-                        )
-                    }
-
-                    }
-                    keyExtractor={(item) => item.startTime}
-                    ItemSeparatorComponent={MyItemSeparator}
-                    ListEmptyComponent={myListEmpty}
-                    ListHeaderComponent={() => (<View style={{ alignItems: "center" }}>
-                        <Text style={{ fontSize: 30, textAlign: "center", marginTop: 20, fontWeight: 'bold', textDecorationLine: 'underline' }}>
-                            All Journeys
-                        </Text>
-                        <Text style={{ fontSize: 15, textAlign: "center", marginBottom: 20, fontWeight: 'bold' }}>tap timestamp to view journey on map</Text>
-                        </View>
-                    )}
-                    ListFooterComponent={() => (
-                        <Text style={{ fontSize: 20, textAlign: "center", marginBottom: 20, fontWeight: 'bold',textDecorationLine:"underline" }}>End List</Text>
-                    )}
+            {selectedJourney.startPoint && routePoints[index] && (
+              <>
+                <Polyline coordinates={[...routePoints]} strokeWidth={2} />
+                <Marker
+                  title="start"
+                  coordinate={selectedJourney.startPoint}
+                  pinColor="green"
                 />
-                <View style={styles.footer}>
-                    <Button color="red" title="Clear All Journeys" onPress={() => {
-                        clearAllJourneys();
-                        setJourneyList([]);
+                <Marker
+                  title="end"
+                  coordinate={selectedJourney.endPoint}
+                  pinColor="red"
+                />
+                <Marker
+                  title="cursor"
+                  coordinate={routePoints[index]}
+                  pinColor="blue"
+                />
+              </>
+            )}
+          </MapView>
+          {/** vertical slider for zoom level -----------------------------------------------------------*/}
+          <View style={styles.verticalSlider}>
+            <VerticalSlider
+              value={zoom}
+              onChange={(value) => setZoom(0.2-value)}
+              height={200}
+              width={40}
+              step={0.01}
+              min={0}
+              max={0.2}
+              borderRadius={5}
+              minimumTrackTintColor="#2979FF"
+              maximumTrackTintColor="#D1D1D6"
+              showBallIndicator
+              ballIndicatorColor="#2979FF"
+              ballIndicatorTextColor="#fff"
+              ballIndicatorWidth={80}
+              ballIndicatorHeight={40}
+            />
+          </View>
+          <Text
+            style={{
+              position: "absolute",
+              top: 0,
+              left: 10,
+              fontSize: 20,
+              textAlign: "center",
+              marginTop: 20,
+              fontWeight: "bold",
+            }}
+          >
+            Tap map to go back
+          </Text>
+
+          {/**info box */}
+{/**--------------------------------------------------------------------------------------------- */}
+          {routePoints[index] && ( //if route points exist show info
+            <View style={styles.info}>
+              {/* display date of cursor point */}
+              <Text style={styles.description}>
+                Date: {new Date(cursor.timestamp).toLocaleDateString()}
+              </Text>
+
+              {/* add up distances between points*/}
+              <Text style={styles.description}>
+                Total Distance:{" "}
+                {(
+                  routePoints.reduce((acc, point, index, array) => {
+                    if (index < array.length - 1) {
+                      acc += getDistance(point, array[index + 1]);
                     }
+                    return acc;
+                  }, 0) * 0.000621371
+                ).toFixed(2)}{" "}
+                miles
+              </Text>
 
+              {/* display time of cursor point */}
+              <Text
+                style={
+                  isMobile
+                    ? { ...styles.description, color: "blue", borderWidth: 1 }
+                    : { ...styles.description, color: "black" }
+                }
+              >
+                Time: {new Date(cursor.timestamp).toLocaleTimeString()}
+              </Text>
 
-                    } />
-                    <Button color="green" title="Back to Local Map" onPress={() => {
-                        if (navigation.canGoBack()) {
-                            navigation.goBack();
-                        } else {
-                            navigation.navigate('Map')
-                        }
+              {/*add up distance to cursor */}
+              <Text style={styles.description}>
+                Distance covered:{" "}
+                {(
+                  routePoints
+                    .slice(0, index + 1)
+                    .reduce((acc, point, index, array) => {
+                      if (index < array.length - 1) {
+                        acc += getDistance(point, array[index + 1]);
+                      }
+                      return acc;
+                    }, 0) * 0.000621371
+                ).toFixed(2)}{" "}
+                miles
+              </Text>
 
+              {/*Calculate and display local speed */}
+              <Text style={styles.description}>
+                Speed:{" "}
+                {(
+                  (getDistance(cursor, routePoints[index + 1]) /
+                    ((routePoints[index + 1].timestamp - cursor.timestamp) /
+                      1000)) *
+                  2.23694
+                ).toFixed(2)}{" "}
+                mph{" "}
+              </Text>
+
+              {/* calculate and display average journey speed**/}
+              <Text style={styles.description}>
+                Average trip speed:{" "}
+                {(
+                  (routePoints.reduce((acc, point, index, array) => {
+                    if (index < array.length - 1) {
+                      acc += getDistance(point, array[index + 1]);
                     }
-                    } />
+                    return acc;
+                  }, 0) /
+                    ((selectedJourney.endTime - selectedJourney.startTime) /
+                      1000)) *
+                  2.23694
+                ).toFixed(2)}{" "}
+                mph{" "}
+              </Text>
+            </View>
+                    )}
+                    {/**--------------------------------------------------------------------------------------------- */}
+                    <ControlButtons setSpeed={setSpeed} isMobile={isMobile} setIndex={setIndex} setIsMobile={setIsMobile} setCursor={setCursor} />
+          {/* //display speed multipler if mobile */}
+          {isMobile && (
+            <Text
+              style={{
+                position: "absolute",
+                bottom: 10,
+                left: 30,
+                fontSize: 20,
+                textAlign: "center",
+                marginTop: 20,
+                fontWeight: "bold",
+              }}
+            >
+              Speed: {(1000 / speed).toFixed(2)} x{" "}
+            </Text>
+          )}
+        </View>
+      </GestureHandlerRootView>// end map journey display
+        ) : (
+                ///////////////////////////////////////////////////////////////////////////////////////
+                // start journey list display
+
+      //or if no selected journey view list
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={journeyList}
+          renderItem={({ item }) => {
+            const date = new Date(item.startTime);
+
+            return (
+              <Pressable
+                onPress={() => {
+                  setCursor({
+                    latitude: item.startPoint.latitude,
+                    longitude: item.startPoint.longitude,
+                    timestamp: item.blocks[0][1].timestamp,
+                  });
+                  setSelectedJourney(item);
+                }}
+              >
+                <View style={styles.listItem}>
+                  <Text
+                    style={styles.item}
+                  >{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text>
+                  <View style={styles.deleteButton}>
+                    <Button
+                      color={"red"}
+                      title="Delete"
+                      onPress={() => {
+                        deleteJourney(item.startTime);
+                        setJourneyList(
+                          journeyList.filter(
+                            (journey) => journey.startTime !== item.startTime
+                          )
+                        );
+                      }}
+                    />
+                  </View>
                 </View>
-            </SafeAreaView>
-
-        );
+              </Pressable>
+            );
+          }}
+          keyExtractor={(item) => item.startTime}
+          ItemSeparatorComponent={MyItemSeparator}
+          ListEmptyComponent={myListEmpty}
+          ListHeaderComponent={() => (
+            <View style={{ alignItems: "center" }}>
+              <Text
+                style={{
+                  fontSize: 30,
+                  textAlign: "center",
+                  marginTop: 20,
+                  fontWeight: "bold",
+                  textDecorationLine: "underline",
+                }}
+              >
+                All Journeys
+              </Text>
+              <Text
+                style={{
+                  fontSize: 15,
+                  textAlign: "center",
+                  marginBottom: 20,
+                  fontWeight: "bold",
+                }}
+              >
+                tap timestamp to view journey on map
+              </Text>
+            </View>
+          )}
+          ListFooterComponent={() => (
+            <Text
+              style={{
+                fontSize: 20,
+                textAlign: "center",
+                marginBottom: 20,
+                fontWeight: "bold",
+                textDecorationLine: "underline",
+              }}
+            >
+              End List
+            </Text>
+          )}
+        />
+        <View style={styles.footer}>
+          <Button
+            color="red"
+            title="Clear All Journeys"
+            onPress={() => {
+              clearAllJourneys();
+              setJourneyList([]);
+            }}
+          />
+          <Button
+            color="green"
+            title="Back to Local Map"
+            onPress={() => {
+              if (navigation.canGoBack()) {
+                navigation.goBack();
+              } else {
+                navigation.navigate("Map");
+              }
+            }}
+          />
+        </View>
+      </SafeAreaView>
+    );
 }
 
 
@@ -344,40 +456,11 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
      
     },
-    controlButtons:{position:"absolute",
-    bottom:50,
-    left:0,
-    height:60,
-    width:"80%",
-    marginLeft:"10%",
-    flexDirection:"row",
-    justifyContent:"space-around",
-    alignItems:"center"
-},
-
-    controlButton:{
-        fontSize:40,
-        borderWidth:2,
-        paddingLeft:15,
-        paddingRight:15,
-        paddingBottom:10,
-        textAlign:"center",
-    },
-    controlButtonReversed:{
-        
-        fontSize:40,
-        borderWidth:2,
-        paddingTop:0,
-        paddingLeft:15,
-        paddingRight:15,
-        paddingBottom:10,
-        textAlign:"center",
-        transform:[{rotate:"180deg"}]
-    },
+   
     verticalSlider:{
         position:"absolute",
-        top:0,
-        left:0,
+        top:"65%",
+        right:0,
         height:"100%",
         width:40,
         // zIndex:100
