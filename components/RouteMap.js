@@ -1,75 +1,77 @@
 import MapView, { Marker, Polyline } from "react-native-maps";
 import { PROVIDER_GOOGLE } from "react-native-maps";
-// import MapViewDirections from 'react-native-maps-directions';
-import { getLocation } from "../utils/getLocation";
+import { getLocationPermissions } from "../utils/getLocationPermissions";
 import { useState, useEffect } from "react";
 import { StyleSheet, View, StatusBar, Button } from "react-native";
 import { useContext } from "react";
 import { RouteContext } from "../contexts/routeContext";
 import { addJourney } from "../utils/dbApi";
+import * as TaskManager from "expo-task-manager";
+import * as Location from "expo-location";
+import BackgroundTimer from 'react-native-background-timer';
 
-//mport {API_KEY} from '@env';
+
+const LOCATION_TRACKING = 'location-tracking';
+let lat=0;
+let long=0;
+let time=0;
 
 export const RouteMap = ({ navigation }) => {
+ 
   const { routeData, setRouteData } = useContext(RouteContext);
   const [isMobile, setIsMobile] = useState(false);
   const [counter, setCounter] = useState(0);
   const timerInterval = 1000;
-
   const [location, setLocation] = useState({});
-  const [region, setRegion] = useState(null);
 
-  const [waypoints, setWaypoints] = useState([]);
+
+
+
   //get initial location/////////////////////////////////////
   useEffect(() => {
-    getLocation()
-      .then((location) => {
-        setLocation(location);
-       
-        if(!region){
-        setRegion({
-          latitude: location.coords.latitude,
-          longitude: location.coords.longitude,
-          latitudeDelta: 0.001,
-          longitudeDelta: 0.001,
+    getLocationPermissions()
+      .then((response) => {
+        Location.startLocationUpdatesAsync(LOCATION_TRACKING, {
+          accuracy: Location.Accuracy.BestForNavigation,
+          timeInterval: 1000,
+          distanceInterval: 1,
+          foregroundService: {
+            notificationTitle: 'Location Tracking',
+            notificationBody: 'Location Tracking',
+          },
         });
-      }
+      })
+      .catch((error) => {
+        console.log(error, "error in get location");
+        alert("error in get location");
       })
     
-      .catch((error) => {
-        alert(error);
-        console.log(error, "error in catch");
-        setCounter(0)
-      });
-  }, [counter]);
+    //cleanup
+    return () => {
+      Location.stopLocationUpdatesAsync(LOCATION_TRACKING);
+    }
+  }, []);
 
   useEffect(() => {
-    if (isMobile) {
-      setTimeout(() => {
+////////////////////////////////////////////////THIS ISNT WORKING SOrt out with backgrOund fetch
+     const intervalId=BackgroundTimer.setInterval(() => {
         setCounter((counter) => counter + 1);
+        setLocation({ latitude: lat, longitude: long })
+        //so the map relies on state changes so cannot
+        //use lat,long directly in map
   
-      }, timerInterval);
-    } else {
-      //stop pressed
-      setCounter(0);
-    //   if (counter != 0) {
-    //     ///log out info, for testing
-    //     console.log("start point", routeData.startPoint);
-    //     routeData.blocks.forEach((block) => {
-    //       block.forEach((point) => {
-    //         console.log("waypoint", point);
-    //       });
-    //       console.log("block end");
-    //     });
-    //     console.log("end point", routeData.endPoint);
-    //   }
-    // }
+     }, timerInterval);
+    return () => {
+      BackgroundTimer.clearInterval(intervalId);
     }
-  }, [counter, isMobile]);
+   
+  }, [counter]);
 
   //add waypoint to routeData////////////////////////////////
   useEffect(() => {
     if (isMobile) {
+     
+   
       //sort out blocks of 10 waypoints here....
       setRouteData((oldData) => {
         const newData = { ...oldData };
@@ -79,16 +81,16 @@ export const RouteMap = ({ navigation }) => {
         ) {
           //if there is a block and it is not full
           newData.blocks[oldData.blocks.length - 1].push({
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
+            latitude: lat,
+            longitude: long,
             timestamp: Date.now(),
           });
         } else {
           //if there is no block or the last block is full
           newData.blocks.push([
             {
-              latitude: location.coords.latitude,
-              longitude: location.coords.longitude,
+              latitude: lat,
+              longitude: long,
               timestamp: Date.now(),
             },
           ]);
@@ -100,121 +102,125 @@ export const RouteMap = ({ navigation }) => {
 
   //start journey//////////////////////////////////////////
   const handleStartPress = (e) => {
-  ;
-    if (location.coords) {
-      //set start point and clear waypoint blocks
-      setRouteData((oldData) => {
-        return {
-          ...oldData,
-          startPoint: {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-          },
-          startTime: Date.now(),
-          region: {
-            latitude: location.coords.latitude,
-            longitude: location.coords.longitude,
-            latitudeDelta: 0.005,
-            longitudeDelta: 0.005,
-          },
-          blocks: [],
-        };
-      });
-      setIsMobile(true);
-    } else {
-      alert("location not available");
-    }
+    ;
+    
+    //set start point and clear waypoint blocks
+    setRouteData((oldData) => {
+      return {
+        ...oldData,
+        startPoint: {
+          latitude: lat,
+          longitude: long,
+        },
+        startTime: time,
+        region: {
+          latitude: lat,
+          longitude: long,
+          latitudeDelta: 0.005,
+          longitudeDelta: 0.005,
+        },
+        blocks: [],
+      };
+    });
+    setIsMobile(true);
+   
   };
 
   //stop journey////////////////////////////////////////////
   const handleStopPress = () => {
        
-    //stop timer
+    //stop recording
     setIsMobile(false);
     //store route data in db here....
     //add endpoint and endtime to routeData
-addJourney({
-  ...routeData,
-  endPoint: {
-    latitude: location.coords.latitude,
-    longitude: location.coords.longitude,
-  },
-  endTime: Date.now(),
-})
-.then((response)=>{
-  alert("journey saved");
+    addJourney({
+      ...routeData,
+      endPoint: {
+        latitude: lat,
+        longitude: long,
+      },
+      endTime: time,
+    })
+      .then((response) => {
+        alert("journey saved");
  
-   //reset start point temp for test
-  setTimeout(() => {
-    setRouteData((oldData) => {
-      return {
-        ...oldData,
-        startPoint: null,
-        startTime: null,
-        endpoint: null,
-        endTime: null,
-        blocks: [],
-      };
-    });
-    navigation.navigate("My Journeys");
-  }, 1000);
+        //reset start point temp for test
+        setTimeout(() => {
+          setRouteData((oldData) => {
+            return {
+              ...oldData,
+              startPoint: null,
+              startTime: null,
+              endpoint: null,
+              endTime: null,
+              blocks: [],
+            };
+          });
+          navigation.navigate("My Journeys");
+        }, 1000);
 
-})
-.catch((error)=>{
-  alert("error in saving journey");
-  console.log(error,"error in route map");
-}
-)
+      })
+      .catch((error) => {
+        alert("error in saving journey");
+        console.log(error, "error in route map");
+      }
+      )
     
   };
   //press on map/////////////////////////////////////////////
   const handleMapPress = (e) => {
-        // console.log("pressed map at:", e.nativeEvent.coordinate);
+    console.log(lat, long)
   };
   //render///////////////////////////////////////////////////
-  return (
-    <View style={styles.container}>
-      <MapView
-        onPress={handleMapPress}
-        style={styles.map}
-        provider={PROVIDER_GOOGLE}
-        region={region}
-        showsUserLocation={true}
-        followsUserLocation={true}
-        loadingEnabled={true}
-        showsCompass={true}
-      >
-        {/* if isMobile is true, then show the stop button and the route */}
-        {isMobile && routeData.startPoint && (
-          <>
-            <Polyline
-              coordinates={[
-                ...routeData.blocks.reduce((acc, block) => {
-                  return [...acc, ...block];
-                }, []),
-              ]}
-              strokeWidth={5}
-            />
-            <Marker coordinate={routeData.startPoint} pinColor="green" />
+  return location.latitude && (
+      <View style={styles.container}>
+        <MapView
+          onPress={handleMapPress}
+          style={styles.map}
+          provider={PROVIDER_GOOGLE}
+          region={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.005, longitudeDelta: 0.005 }}
+          showsUserLocation={true}
+          followsUserLocation={true}
+          loadingEnabled={true}
+          showsCompass={true}
+          mapType="standard"
+        >
+          {/* if isMobile is true, then show the stop button and the route */}
+          {isMobile && routeData.startPoint && (
+            <>
+              <Polyline
+                coordinates={[
+                  ...routeData.blocks.reduce((acc, block) => {
+                    return [...acc, ...block];
+                  }, []),
+                ]}
+                strokeWidth={5}
+              />
+              <Marker coordinate={routeData.startPoint} pinColor="green" />
 
            
-          </>
+            </>
+          )}
+        </MapView>
+            
+        {!isMobile && lat && long && (
+          <View style={styles.startButton}>
+            <Button title="Start" onPress={handleStartPress} />
+          </View>
         )}
-      </MapView>
-      {!isMobile && location.coords&&(
-        <View style={styles.startButton}>
-          <Button title="Start" onPress={handleStartPress} />
-        </View>
-      )}
-      {isMobile && (
-        <View style={styles.stopButton}>
-          <Button title="Stop" onPress={handleStopPress} />
-        </View>
-      )}
+        {isMobile && (
+          <View style={styles.stopButton}>
+            <Button title="Stop" onPress={handleStopPress} />
+          </View>
+        )}
 
-      <StatusBar style="auto" />
-    </View>
-  );
+        <StatusBar style="auto" />
+      </View>
+      
+    
+    
+    )
+    
 };
 
 const styles = StyleSheet.create({
@@ -238,4 +244,24 @@ const styles = StyleSheet.create({
     bottom: 50,
     right: 50,
   },
+});
+
+TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
+  if (error) {
+      console.log('LOCATION_TRACKING task ERROR:', error);
+      return;
+  }
+  if (data) {
+    console.log(data,"data" )
+      const { locations } = data;
+       lat = locations[0].coords.latitude;
+    long = locations[0].coords.longitude;
+    time=locations[0].timestamp;
+
+   
+
+      console.log(
+          `${new Date(Date.now()).toLocaleString()}: ${lat},${long}`
+      );
+  }
 });

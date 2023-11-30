@@ -36,6 +36,14 @@
       "eas": {
         "projectId": "e933b267-edc3-4652-a3cf-3aa19a2c9afe"
       }
-    }
+    },
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow Trip Tracker to use your location."
+        }
+      ]
+    ]
   }
 }
