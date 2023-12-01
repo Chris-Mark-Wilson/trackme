@@ -8,13 +8,16 @@ import { RouteContext } from "../contexts/routeContext";
 import { addJourney } from "../utils/dbApi";
 import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
-import BackgroundTimer from 'react-native-background-timer';
+
+import { AppState } from 'react-native';
 
 
+// global variables for background location tracking
 const LOCATION_TRACKING = 'location-tracking';
 let lat=0;
 let long=0;
-let time=0;
+let time = 0;
+let waypoints=[]
 
 export const RouteMap = ({ navigation }) => {
  
@@ -23,22 +26,25 @@ export const RouteMap = ({ navigation }) => {
   const [counter, setCounter] = useState(0);
   const timerInterval = 1000;
   const [location, setLocation] = useState({});
+  const [appState, setAppState] = useState(AppState.currentState);
 
 
 
 
-  //get initial location/////////////////////////////////////
+ //setup location tracking and appstate listeners////////////////////////
   useEffect(() => {
+    AppState.addEventListener('change', handleAppStateChange);
     getLocationPermissions()
       .then((response) => {
         Location.startLocationUpdatesAsync(LOCATION_TRACKING, {
           accuracy: Location.Accuracy.BestForNavigation,
           timeInterval: 1000,
-          distanceInterval: 1,
+         
           foregroundService: {
             notificationTitle: 'Location Tracking',
             notificationBody: 'Location Tracking',
           },
+          pausesUpdatesAutomatically: false,
         });
       })
       .catch((error) => {
@@ -49,65 +55,68 @@ export const RouteMap = ({ navigation }) => {
     //cleanup
     return () => {
       Location.stopLocationUpdatesAsync(LOCATION_TRACKING);
+      AppState.removeEventListener('change', handleAppStateChange);
     }
   }, []);
 
-  useEffect(() => {
-////////////////////////////////////////////////THIS ISNT WORKING SOrt out with backgrOund fetch
-     const intervalId=BackgroundTimer.setInterval(() => {
-        setCounter((counter) => counter + 1);
-        setLocation({ latitude: lat, longitude: long })
-        //so the map relies on state changes so cannot
-        //use lat,long directly in map
-  
-     }, timerInterval);
-    return () => {
-      BackgroundTimer.clearInterval(intervalId);
-    }
-   
-  }, [counter]);
+//handle appstate change///////////////////////////////////////////
+  const handleAppStateChange = (nextAppState) => {
+    if (appState.match(/inactive|background/) && nextAppState === 'active') {
+      console.log('App has come to the foreground!');
+      // The app has come to the foreground, copy the data recorded whilst in the background
+      if (isMobile) {
+        setRouteData((oldData) => {
+          return {
+            ...oldData,
+            points: [ ...waypoints],
+          };
+        });
+      }
+    
+      setLocation({ ...waypoints[waypoints.length - 1] })
+      setAppState(nextAppState);
+    };
+  }
 
-  //add waypoint to routeData////////////////////////////////
+///timer for updating location//////////////////////////////////////
   useEffect(() => {
+    
+    const timer = setInterval(() => {
+      setCounter((oldCounter) => oldCounter + 1);
+    }, timerInterval);
+    return () => {
+      clearInterval(timer);
+    };
+  }
+    , [counter]);
+  
+  //update location///////////////////////////////////////////////  
+  useEffect(() => {
+    setLocation({...waypoints[waypoints.length-1]})
     if (isMobile) {
-     
-   
-      //sort out blocks of 10 waypoints here....
+      // console.log(waypoints,"waypoints in useEffect")
+      //add waypoint to routeData////////////////////////////////
       setRouteData((oldData) => {
-        const newData = { ...oldData };
-        if (
-          oldData.blocks.length > 0 &&
-          oldData.blocks[oldData.blocks.length - 1].length < 10
-        ) {
-          //if there is a block and it is not full
-          newData.blocks[oldData.blocks.length - 1].push({
-            latitude: lat,
-            longitude: long,
-            timestamp: Date.now(),
-          });
-        } else {
-          //if there is no block or the last block is full
-          newData.blocks.push([
-            {
-              latitude: lat,
-              longitude: long,
-              timestamp: Date.now(),
-            },
-          ]);
-        }
-        return newData;
+        return {
+          ...oldData,
+          points: [ ...waypoints],
+        };
       });
     }
-  }, [isMobile, counter]);
+  }
+    , [counter]);
+
+
 
   //start journey//////////////////////////////////////////
   const handleStartPress = (e) => {
-    ;
-    
-    //set start point and clear waypoint blocks
+    //clear waypoints
+    waypoints = []
+    //push start point to waypoints
+    waypoints.push({latitude:lat,longitude:long,timestamp:time})
+    //set start point and clear waypoint 
     setRouteData((oldData) => {
       return {
-        ...oldData,
         startPoint: {
           latitude: lat,
           longitude: long,
@@ -119,9 +128,10 @@ export const RouteMap = ({ navigation }) => {
           latitudeDelta: 0.005,
           longitudeDelta: 0.005,
         },
-        blocks: [],
-      };
-    });
+        points: waypoints,
+      }
+    }
+    );
     setIsMobile(true);
    
   };
@@ -133,15 +143,13 @@ export const RouteMap = ({ navigation }) => {
     setIsMobile(false);
     //store route data in db here....
     //add endpoint and endtime to routeData
+    console.log(routeData,"route data")
     addJourney({
       ...routeData,
-      endPoint: {
-        latitude: lat,
-        longitude: long,
-      },
-      endTime: time,
+      endPoint: waypoints[waypoints.length-1],
+      endTime: waypoints[waypoints.length-1].timestamp,
     })
-      .then((response) => {
+      .then(() => {
         alert("journey saved");
  
         //reset start point temp for test
@@ -153,7 +161,7 @@ export const RouteMap = ({ navigation }) => {
               startTime: null,
               endpoint: null,
               endTime: null,
-              blocks: [],
+              points: [],
             };
           });
           navigation.navigate("My Journeys");
@@ -181,7 +189,7 @@ export const RouteMap = ({ navigation }) => {
           region={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.005, longitudeDelta: 0.005 }}
           showsUserLocation={true}
           followsUserLocation={true}
-          loadingEnabled={true}
+          loadingEnabled={true} 
           showsCompass={true}
           mapType="standard"
         >
@@ -190,9 +198,7 @@ export const RouteMap = ({ navigation }) => {
             <>
               <Polyline
                 coordinates={[
-                  ...routeData.blocks.reduce((acc, block) => {
-                    return [...acc, ...block];
-                  }, []),
+                  ...routeData.points
                 ]}
                 strokeWidth={5}
               />
@@ -247,21 +253,17 @@ const styles = StyleSheet.create({
 });
 
 TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
-  if (error) {
-      console.log('LOCATION_TRACKING task ERROR:', error);
-      return;
-  }
+  if (error) { console.log(error, "error in task manager") }
   if (data) {
-    console.log(data,"data" )
+    console.log(data.locations[0].coords, "data")
       const { locations } = data;
        lat = locations[0].coords.latitude;
     long = locations[0].coords.longitude;
-    time=locations[0].timestamp;
-
+    time = locations[0].timestamp;
+    // console.log(lat,long,time,"location")
+waypoints.push({latitude:lat,longitude:long,timestamp:time})
    
-
-      console.log(
-          `${new Date(Date.now()).toLocaleString()}: ${lat},${long}`
-      );
+console.log(waypoints.length,"number of waypoints in task manager")
+      
   }
 });

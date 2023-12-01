@@ -23,9 +23,9 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.chrismark_wilson.trackme",
-      "config":{
-        "googleMaps":{
-          "apiKey":"API KEY GOES HERE FOR BUILD"
+      "config": {
+        "googleMaps": {
+          "apiKey": "API KEY GOES HERE FOR BUILD"
         }
       }
     },
@@ -43,7 +43,8 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Trip Tracker to use your location."
         }
-      ]
+      ],
+      "react-native-background-fetch"
     ]
   }
 }

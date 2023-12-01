@@ -44,14 +44,12 @@ export const MyJourneys = ({ navigation }) => {
             navigation.removeListener('focus', () => { })
         }
     }, [navigation])
+  
+  //Journey Selected//////////////////////////////////////////////////////////////////////////////////////
     useEffect(() => {
         if (selectedJourney) {
-            //copy all blocks into 1 long array
-            setRoutePoints([
-                ...selectedJourney.blocks.reduce((acc, block) => {
-                    return [...acc, ...block];
-                }, []),
-            ])
+            //copy all journey waypoints
+            setRoutePoints([...selectedJourney.points])
         }
     }, [selectedJourney])
 
@@ -93,7 +91,7 @@ export const MyJourneys = ({ navigation }) => {
 
     
     const logArgs = (...args) => {
-        console.log(args);
+        console.log(args,"args in logargs");
     }
    
     return isLoading ? (
@@ -114,7 +112,7 @@ export const MyJourneys = ({ navigation }) => {
               latitudeDelta: zoom,
               longitudeDelta: zoom,
             }}
-            onRegionChange={(newRegion)=>{console.log(zoom)}}
+            onRegionChange={(newRegion)=>{console.log(zoom,"zoom level in region change")}}
           >
             {/* if journey selected show mapview*/}
 
@@ -146,7 +144,7 @@ export const MyJourneys = ({ navigation }) => {
               onChange={(value) => setZoom(0.2-value)}
               height={200}
               width={40}
-              step={0.01}
+              step={0.005}
               min={0}
               max={0.2}
               borderRadius={5}
@@ -290,7 +288,7 @@ export const MyJourneys = ({ navigation }) => {
                   setCursor({
                     latitude: item.startPoint.latitude,
                     longitude: item.startPoint.longitude,
-                    timestamp: item.blocks[0][1].timestamp,
+                    timestamp: item.points[1].timestamp,
                   });
                   setSelectedJourney(item);
                 }}
