@@ -11,6 +11,7 @@ import { ControlButtons } from './ControlButtons';
 import { secondsToTimeString } from '../utils/secondsToTimeString';
 
 
+
 export const MyJourneys = ({ navigation }) => {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
