@@ -8,6 +8,7 @@ import { Dimensions } from 'react-native';
 import VerticalSlider from 'rn-vertical-slider';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ControlButtons } from './ControlButtons';
+import { secondsToTimeString } from '../utils/secondsToTimeString';
 
 
 export const MyJourneys = ({ navigation }) => {
@@ -179,6 +180,16 @@ export const MyJourneys = ({ navigation }) => {
               <Text style={styles.description}>
                 Date: {new Date(cursor.timestamp).toLocaleDateString()}
               </Text>
+               {/* display time of cursor point */}
+               <Text
+                style={
+                  isMobile
+                    ? { ...styles.description, color: "blue", borderWidth: 1 }
+                    : { ...styles.description, color: "black" }
+                }
+              >
+                Time: {new Date(cursor.timestamp).toLocaleTimeString()}
+              </Text>
 
               {/* add up distances between points*/}
               <Text style={styles.description}>
@@ -193,17 +204,15 @@ export const MyJourneys = ({ navigation }) => {
                 ).toFixed(2)}{" "}
                 miles
               </Text>
+              <Text style={styles.description}>
+                Total Time:{" "}
+                {(
+                secondsToTimeString ((selectedJourney.endTime - selectedJourney.startTime)/1000) 
+                )}
+                
+                </Text>
 
-              {/* display time of cursor point */}
-              <Text
-                style={
-                  isMobile
-                    ? { ...styles.description, color: "blue", borderWidth: 1 }
-                    : { ...styles.description, color: "black" }
-                }
-              >
-                Time: {new Date(cursor.timestamp).toLocaleTimeString()}
-              </Text>
+             
 
               {/*add up distance to cursor */}
               <Text style={styles.description}>
