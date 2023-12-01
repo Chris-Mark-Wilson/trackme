@@ -8,6 +8,8 @@ import { RouteContext } from "../contexts/routeContext";
 import { addJourney } from "../utils/dbApi";
 import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
+import VerticalSlider from "rn-vertical-slider";
 
 import { AppState } from 'react-native';
 
@@ -28,7 +30,7 @@ export const RouteMap = ({ navigation }) => {
   const [location, setLocation] = useState({});
   const [appState, setAppState] = useState(AppState.currentState);
 
-
+const [zoom,setZoom]=useState(0.005)
 
 
  //setup location tracking and appstate listeners////////////////////////
@@ -181,12 +183,13 @@ export const RouteMap = ({ navigation }) => {
   };
   //render///////////////////////////////////////////////////
   return location.latitude && (
+    <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <MapView
           onPress={handleMapPress}
           style={styles.map}
           provider={PROVIDER_GOOGLE}
-          region={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: 0.005, longitudeDelta: 0.005 }}
+          region={{ latitude: location.latitude, longitude: location.longitude, latitudeDelta: zoom, longitudeDelta: zoom }}
           showsUserLocation={true}
           followsUserLocation={true}
           loadingEnabled={true} 
@@ -208,6 +211,25 @@ export const RouteMap = ({ navigation }) => {
             </>
           )}
         </MapView>
+        <View style={styles.verticalSlider}>
+            <VerticalSlider
+              value={0.205-zoom}
+              onChange={(value) => setZoom(0.205-value)}
+              height={200}
+              width={40}
+              step={0.005}
+              min={0}
+              max={0.2}
+              borderRadius={5}
+              minimumTrackTintColor="#2979FF"
+              maximumTrackTintColor="#D1D1D6"
+              showBallIndicator
+              ballIndicatorColor="#2979FF"
+              ballIndicatorTextColor="#fff"
+              ballIndicatorWidth={80}
+              ballIndicatorHeight={40}
+            />
+          </View>
             
         {!isMobile && lat && long && (
           <View style={styles.startButton}>
@@ -222,6 +244,7 @@ export const RouteMap = ({ navigation }) => {
 
         <StatusBar style="auto" />
       </View>
+    </GestureHandlerRootView>
       
     
     
@@ -250,12 +273,21 @@ const styles = StyleSheet.create({
     bottom: 50,
     right: 50,
   },
+  verticalSlider:{
+    position:"absolute",
+    top:"65%",
+    right:0,
+    height:"100%",
+    width:40,
+    // zIndex:100
+}
 });
 
 TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
-  if (error) { console.log(error, "error in task manager") }
+  if (error) { console.log(error, "error in task manager") 
+alert("error in background task manager",error) }
   if (data) {
-    console.log(data.locations[0].coords, "data")
+    // console.log(data.locations[0].coords, "data")
       const { locations } = data;
        lat = locations[0].coords.latitude;
     long = locations[0].coords.longitude;
@@ -263,7 +295,7 @@ TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
     // console.log(lat,long,time,"location")
 waypoints.push({latitude:lat,longitude:long,timestamp:time})
    
-console.log(waypoints.length,"number of waypoints in task manager")
+// console.log(waypoints.length,"number of waypoints in task manager")
       
   }
 });

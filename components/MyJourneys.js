@@ -14,7 +14,7 @@ export const MyJourneys = ({ navigation }) => {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
     const [ASPECT_RATIO, setASPECT_RATIO] = useState(windowWidth / windowHeight);
-    const [zoom, setZoom] = useState(0.01);
+    const [zoom, setZoom] = useState(0.005);
     const [isLoading, setIsLoading] = useState(true);
     const [journeyList, setJourneyList] = useState([])
     const [selectedJourney, setSelectedJourney] = useState(null);
@@ -140,8 +140,8 @@ export const MyJourneys = ({ navigation }) => {
           {/** vertical slider for zoom level -----------------------------------------------------------*/}
           <View style={styles.verticalSlider}>
             <VerticalSlider
-              value={zoom}
-              onChange={(value) => setZoom(0.2-value)}
+              value={0.205-zoom}
+              onChange={(value) => setZoom(0.205-value)}
               height={200}
               width={40}
               step={0.005}
