@@ -1,5 +1,6 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
+import { Entypo } from '@expo/vector-icons'; 
 
 export const ControlButtons = ({ routePoints,setSpeed, isMobile,setIsMobile,setIndex,setCursor }) => {
     return (
@@ -8,7 +9,7 @@ export const ControlButtons = ({ routePoints,setSpeed, isMobile,setIsMobile,setI
                 setSpeed((oSpeed) => {
                     if (oSpeed < 1000) { return oSpeed + 100 } else return oSpeed
                 })
-            }}><Text style={styles.controlButtonReversed}>{String.fromCharCode(187)}</Text></Pressable>
+            }}><Entypo name="controller-fast-backward" size={36} color="black" /></Pressable>
             {/*Have these 2 just change the play speed and have aplay button in the middle that iterates through the routePoints array on a timerspeed set by the arrows*/}
             <Pressable onPressIn={() => {
                 requestAnimationFrame(() => {
@@ -19,15 +20,15 @@ export const ControlButtons = ({ routePoints,setSpeed, isMobile,setIsMobile,setI
                         setCursor(routePoints[0]);
                     }
                 })
-            }}><Text style={styles.controlButton}>{isMobile ? "||" : String.fromCharCode(61)}</Text></Pressable>
-            <Pressable onPressIn={() => { setIsMobile(true); setSpeed(1000) }}><Text style={styles.controlButton}>{">"}</Text></Pressable>
+            }}>{isMobile?<Entypo name="controller-paus" size={36} color="black" />:<Entypo name="controller-stop" size={36} color="black" />}</Pressable>
+            <Pressable onPressIn={() => { setIsMobile(true); setSpeed(1000) }}><Entypo name="controller-play" size={36} color="black" /></Pressable>
             <Pressable onPressIn={() => {
                 setSpeed((oSpeed) => {
                     if (oSpeed >= 100) {
                         return oSpeed - 100
                     } else return oSpeed
                 })
-            }}><Text style={styles.controlButton}>{String.fromCharCode(187)}</Text></Pressable>
+            }}><Entypo name="controller-fast-forward" size={36} color="black" /></Pressable>
         </View>
     )
 }
