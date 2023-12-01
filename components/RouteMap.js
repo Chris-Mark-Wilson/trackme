@@ -49,7 +49,7 @@ export const RouteMap = ({ navigation }) => {
       })
       .catch((error) => {
         console.log(error, "error in get location");
-        alert("error in get location");
+        alert("error in get location",error);
       })
     
     //cleanup

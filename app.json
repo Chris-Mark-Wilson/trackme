@@ -25,7 +25,7 @@
       "package": "com.chrismark_wilson.trackme",
       "config": {
         "googleMaps": {
-          "apiKey": "API KEY GOES HERE FOR BUILD"
+          "apiKey": "AIzaSyB4K_Jt1_XdGfpQ-gxHTuuqi88hnaMMpRs"
         }
       }
     },
@@ -43,8 +43,7 @@
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Trip Tracker to use your location."
         }
-      ],
-      "react-native-background-fetch"
+      ]
     ]
   }
 }
