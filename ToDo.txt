@@ -3,3 +3,7 @@ sort out speed calculation if points are missing, shows wildly varying speeds at
 ensure app follows user on a trip, currently needs manual recentering
 adjust zoom level auto to fit entire trip on screen, have an auto/manual toggle and maybe a slider to set zoom one handed
 set playback to centre on marker, adjustable zoom as before
+
+ok the rn-background-timer does not link in expo 
+so need to use expo-backgrounde-fetch to run tasks in the background..
+

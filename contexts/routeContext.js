@@ -6,7 +6,7 @@ export const RouteProvider = ({children}) => {
         startTime: null,
         startPoint: null,
         endPoint: null,
-      blocks: [], // waypoint blocks of 10
+      points: [], // waypoint blocks of 10
         endTime: null,
         region:null
     })
