@@ -252,7 +252,7 @@ export const MyJourneys = ({ navigation }) => {
             </View>
                     )}
                     {/**--------------------------------------------------------------------------------------------- */}
-                    <ControlButtons setSpeed={setSpeed} isMobile={isMobile} setIndex={setIndex} setIsMobile={setIsMobile} setCursor={setCursor} />
+            <ControlButtons routePoints={routePoints} setSpeed={setSpeed} isMobile={isMobile} setIndex={setIndex} setIsMobile={setIsMobile} setCursor={setCursor} />
           {/* //display speed multipler if mobile */}
           {isMobile && (
             <Text

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 
-export const ControlButtons = ({ setSpeed, isMobile,setIsMobile,setIndex,setCursor }) => {
+export const ControlButtons = ({ routePoints,setSpeed, isMobile,setIsMobile,setIndex,setCursor }) => {
     return (
         <View style={styles.controlButtons}>
             <Pressable onPressIn={() => {
