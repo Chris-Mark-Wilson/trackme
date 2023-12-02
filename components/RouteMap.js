@@ -11,6 +11,7 @@ import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ZoomSlider } from "./ZoomSlider";
 import { Stopwatch } from "./Stopwatch";
+import {MapToggle} from './MapToggle'
 
 import { AppState } from "react-native";
 
@@ -28,6 +29,7 @@ export const RouteMap = ({ navigation }) => {
   const timerInterval = 1000;
   const [location, setLocation] = useState({});
   const [appState, setAppState] = useState(AppState.currentState);
+  const [mapStyle,setMapStyle]=useState('standard')
 
   const [zoom, setZoom] = useState(0.005);
 
@@ -187,7 +189,7 @@ export const RouteMap = ({ navigation }) => {
             followsUserLocation={true}
             loadingEnabled={true}
             showsCompass={true}
-            mapType="standard"
+            mapType={mapStyle}
           >
             {/* if isMobile is true, then show the stop button and the route */}
             {isMobile && routeData.startPoint && (
@@ -218,6 +220,9 @@ export const RouteMap = ({ navigation }) => {
             />
           )
           }
+          <View style={styles.mapToggle}>
+          <MapToggle mapStyle={mapStyle} setMapStyle={setMapStyle} />
+          </View>
 
           <StatusBar style="auto" />
         </View>
@@ -255,6 +260,12 @@ const styles = StyleSheet.create({
     width: 40,
     // zIndex:100
   },
+  mapToggle:{
+    position:'absolute',
+    top:10,
+    left:"70%",
+    zIndex:100
+  }
 });
 
 TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {

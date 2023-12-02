@@ -23,6 +23,7 @@ import { ControlButtons } from "./ControlButtons";
 import { secondsToTimeString } from "../utils/secondsToTimeString";
 import { ZoomSlider } from "./ZoomSlider";
 import { SeekSlider } from "./SeekSlider";
+import { MapToggle } from "./MapToggle";
 
 export const MyJourneys = ({ navigation }) => {
   const windowWidth = Dimensions.get("window").width;
@@ -37,6 +38,7 @@ export const MyJourneys = ({ navigation }) => {
   const [index, setIndex] = useState(0);
   const [speed, setSpeed] = useState(1000);
   const [isMobile, setIsMobile] = useState(false);
+  const [mapStyle, setMapStyle] = useState("standard");
   useEffect(() => {
     //focus listener ensures up to date data
     navigation.addListener("focus", () => {
@@ -118,15 +120,13 @@ export const MyJourneys = ({ navigation }) => {
           region={{
             latitude: cursor.latitude,
             longitude: cursor.longitude,
-
             latitudeDelta: zoom,
             longitudeDelta: zoom,
           }}
-          onRegionChange={(newRegion) => {
-            console.log(zoom, "zoom level in region change");
-          }}
+       
+          mapType={mapStyle}
         >
-          {/* if journey selected show mapview*/}
+
 
           {selectedJourney.startPoint && routePoints[index] && (
             <>
@@ -276,6 +276,9 @@ export const MyJourneys = ({ navigation }) => {
             Speed: {(1000 / speed).toFixed(2)} x{" "}
           </Text>
         )}
+          <View style={styles.mapToggle}>
+          <MapToggle mapStyle={mapStyle} setMapStyle={setMapStyle} />
+          </View>
       </View>
     </GestureHandlerRootView> // end map journey display
   ) : (
@@ -456,4 +459,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: "bold",
   },
+  mapToggle:{
+    position:'absolute',
+    top:10,
+    left:"70%",
+    zIndex:100
+  }
 });
