@@ -9,7 +9,7 @@ import { addJourney } from "../utils/dbApi";
 import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import VerticalSlider from "rn-vertical-slider";
+import { VerticalSlider } from "./VerticalSlider";
 
 import { AppState } from 'react-native';
 
@@ -211,25 +211,9 @@ const [zoom,setZoom]=useState(0.005)
             </>
           )}
         </MapView>
-        <View style={styles.verticalSlider}>
-            <VerticalSlider
-              value={0.205-zoom}
-              onChange={(value) => setZoom(0.205-value)}
-              height={200}
-              width={40}
-              step={0.005}
-              min={0}
-              max={0.2}
-              borderRadius={5}
-              minimumTrackTintColor="#2979FF"
-              maximumTrackTintColor="#D1D1D6"
-              showBallIndicator
-              ballIndicatorColor="#2979FF"
-              ballIndicatorTextColor="#fff"
-              ballIndicatorWidth={80}
-              ballIndicatorHeight={40}
-            />
-          </View>
+        
+        {/*vertical slider for zoom **/}
+        <VerticalSlider zoom={zoom} setZoom={setZoom}/>
             
         {!isMobile && lat && long && (
           <View style={styles.startButton}>
