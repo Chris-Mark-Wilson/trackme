@@ -1,5 +1,5 @@
 
-sort out speed calculation if points are missing, shows wildly varying speeds atm
+
 
 disable seek during journey playback unless paused
 

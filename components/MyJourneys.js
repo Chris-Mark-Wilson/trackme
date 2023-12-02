@@ -151,7 +151,7 @@ export const MyJourneys = ({ navigation }) => {
         </MapView>
         {/** vertical slider for zoom level -----------------------------------------------------------*/}
         <ZoomSlider zoom={zoom} setZoom={setZoom} />
-            <SeekSlider index={index} setIndex={setIndex} maxIndex={routePoints.length-1}/>
+           {!isMobile&& <SeekSlider index={index} setIndex={setIndex} maxIndex={routePoints.length-1}/>}
         <Text
           style={{
             position: "absolute",
