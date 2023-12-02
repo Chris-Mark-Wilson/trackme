@@ -1,7 +1,7 @@
 
 
 
-disable seek during journey playback unless paused
+
 
 divide journey into 100 points for seek so it moves
 reasonably across the journey 

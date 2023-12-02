@@ -10,6 +10,7 @@ import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ZoomSlider } from "./ZoomSlider";
+import { Stopwatch } from "./Stopwatch";
 
 import { AppState } from "react-native";
 
@@ -210,6 +211,13 @@ export const RouteMap = ({ navigation }) => {
               <Button title="Stop" onPress={handleStopPress} />
             </View>
           )}
+          {isMobile && routeData&&(
+            <Stopwatch
+              routeData={routeData}
+            
+            />
+          )
+          }
 
           <StatusBar style="auto" />
         </View>
