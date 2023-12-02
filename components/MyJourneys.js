@@ -12,6 +12,7 @@ import { secondsToTimeString } from '../utils/secondsToTimeString';
 
 
 
+
 export const MyJourneys = ({ navigation }) => {
     const windowWidth = Dimensions.get('window').width;
     const windowHeight = Dimensions.get('window').height;
@@ -152,7 +153,7 @@ export const MyJourneys = ({ navigation }) => {
               borderRadius={5}
               minimumTrackTintColor="#2979FF"
               maximumTrackTintColor="#D1D1D6"
-              showBallIndicator
+              showIndicator={true}
               ballIndicatorColor="#2979FF"
               ballIndicatorTextColor="#fff"
               ballIndicatorWidth={80}
@@ -470,7 +471,7 @@ const styles = StyleSheet.create({
         top:"65%",
         right:0,
         height:"100%",
-        width:40,
+        width:80,
         // zIndex:100
     }
 });
