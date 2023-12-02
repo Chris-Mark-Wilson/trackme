@@ -1,13 +1,15 @@
 
 
+tidy up journey list, display more info per journey
 
+remove clear all jpurneys button
 
 
 divide journey into 100 points for seek so it moves
 reasonably across the journey 
 
 pause button for route route map
-timer display for route map
+
 
 offer satellite/standard/hybrid maps
 create 'are you sure' modal for delete trip buttons
