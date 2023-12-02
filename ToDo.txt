@@ -11,10 +11,12 @@ reasonably across the journey
 pause button for route route map
 
 
-offer satellite/standard maps
-switch to white / blue text on satellite
+
+
+
 
 create 'are you sure' modal for delete trip buttons,
 replace delete buttons with a checkbox, once any have been checked show delete button, then show modal to check sure
+create 'are you sure' modal for delete trip buttons
 
 
