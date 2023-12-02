@@ -1,11 +1,15 @@
 
 sort out speed calculation if points are missing, shows wildly varying speeds atm
 
+disable seek during journey playback unless paused
 
+divide journey into 100 points for seek so it moves
+reasonably across the journey 
 
-find or make a better slider
+pause button for route route map
+timer display for route map
 
 offer satellite/standard/hybrid maps
-create 'ae you sure' modal for delete trip buttons
+create 'are you sure' modal for delete trip buttons
 
 
