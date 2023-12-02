@@ -2,7 +2,7 @@
 import Slider from '@react-native-community/slider';
 import { View,StyleSheet,Text } from 'react-native';
 
-export const VerticalSlider = ({ zoom,setZoom }) => {
+export const ZoomSlider = ({ zoom,setZoom }) => {
     return (<>
         <View style={styles.verticalSlider}>
             <Slider
