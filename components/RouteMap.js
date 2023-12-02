@@ -194,14 +194,14 @@ export const RouteMap = ({ navigation }) => {
             {/* if isMobile is true, then show the stop button and the route */}
             {isMobile && routeData.startPoint && (
               <>
-                <Polyline coordinates={[...routeData.points]} strokeWidth={5} />
+                <Polyline coordinates={[...routeData.points]} strokeWidth={4} strokeColor={mapStyle==="standard"?"black":"red"}/>
                 <Marker coordinate={routeData.startPoint} pinColor="green" />
               </>
             )}
           </MapView>
 
           {/*vertical slider for zoom **/}
-          <ZoomSlider zoom={zoom} setZoom={setZoom} />
+          <ZoomSlider zoom={zoom} setZoom={setZoom} mapStyle={mapStyle}/>
 
           {!isMobile && lat && long && (
             <View style={styles.startButton}>

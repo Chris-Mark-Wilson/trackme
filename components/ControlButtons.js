@@ -1,17 +1,17 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
-import { Entypo } from '@expo/vector-icons'; 
+import { Entypo } from '@expo/vector-icons';
 
-export const ControlButtons = ({ routePoints,setSpeed, isMobile,setIsMobile,setIndex,setCursor }) => {
+export const ControlButtons = ({ routePoints, setSpeed, isMobile, setIsMobile, setIndex, setCursor, mapStyle }) => {
     return (
         <View style={styles.controlButtons}>
             <Pressable onPressIn={() => {
                 setSpeed((oSpeed) => {
                     if (oSpeed < 1000) { return oSpeed + 100 } else return oSpeed
                 })
-            }}><Entypo name="controller-fast-backward" size={36} color="black" /></Pressable>
-            {/*Have these 2 just change the play speed and have aplay button in the middle that iterates through the routePoints array on a timerspeed set by the arrows*/}
-            <Pressable onPressIn={() => {
+            }}><Entypo name="controller-fast-backward" size={36} color={mapStyle === "standard" ? "black" : "white"} /></Pressable>
+
+                    <Pressable onPressIn={() => {
                 requestAnimationFrame(() => {
                     if (isMobile) {
                         setIsMobile(false)
@@ -20,15 +20,17 @@ export const ControlButtons = ({ routePoints,setSpeed, isMobile,setIsMobile,setI
                         setCursor(routePoints[0]);
                     }
                 })
-            }}>{isMobile?<Entypo name="controller-paus" size={36} color="black" />:<Entypo name="controller-stop" size={36} color="black" />}</Pressable>
-            <Pressable onPressIn={() => { setIsMobile(true); setSpeed(1000) }}><Entypo name="controller-play" size={36} color="black" /></Pressable>
+            }}>{isMobile ? <Entypo name="controller-paus" size={36} color={mapStyle === "standard" ? "black" : "white"} /> : <Entypo name="controller-stop" size={36} color={mapStyle === "standard" ? "black" : "white"} />}</Pressable>
+
+            <Pressable onPressIn={() => { setIsMobile(true); setSpeed(1000) }}><Entypo name="controller-play" size={36} color={mapStyle === "standard" ? "black" : "white"} /></Pressable>
+
             <Pressable onPressIn={() => {
                 setSpeed((oSpeed) => {
                     if (oSpeed >= 100) {
                         return oSpeed - 100
                     } else return oSpeed
                 })
-            }}><Entypo name="controller-fast-forward" size={36} color="black" /></Pressable>
+            }}><Entypo name="controller-fast-forward" size={36} color={mapStyle === "standard" ? "black" : "white"} /></Pressable>
         </View>
     )
 }
@@ -55,7 +57,7 @@ const styles = {
         textAlign: "center",
     },
     controlButtonReversed: {
-        
+
         fontSize: 40,
         borderWidth: 2,
         paddingTop: 0,
