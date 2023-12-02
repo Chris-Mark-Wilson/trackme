@@ -70,7 +70,6 @@ export const MyJourneys = ({ navigation }) => {
       if (index < routePoints.length - 2) {
         setTimeout(() => {
           setIndex(index + 1);
-          setCursor(routePoints[index]);
         }, speed);
       } else {
         setCursor(routePoints[0]);
@@ -78,6 +77,7 @@ export const MyJourneys = ({ navigation }) => {
         setIsMobile(false);
       }
     }
+    setCursor(routePoints[index]);
   }, [index, isMobile]);
 
   const MyItemSeparator = () => {

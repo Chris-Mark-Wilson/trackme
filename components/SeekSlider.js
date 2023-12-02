@@ -9,10 +9,10 @@ export const SeekSlider = ({ index,setIndex,maxIndex }) => {
         <Slider
           style={{ width: 200, height: 40 }}
           minimumValue={0}
-          maximumValue={maxIndex-1}
+          maximumValue={maxIndex - 1}
           step={1}
           minimumTrackTintColor="black"
-          maximumTrackTintColor="#D1D1D6"
+          maximumTrackTintColor="black"
           thumbTintColor="#2979FF"
           value={index}
           onValueChange={(value) => setIndex(value)}
@@ -23,7 +23,6 @@ export const SeekSlider = ({ index,setIndex,maxIndex }) => {
           position: "absolute",
           top: "95%",
           left: "40%",
-     
         }}
       >
         <Text style={{ fontSize: 20 }}>Trip Seek</Text>

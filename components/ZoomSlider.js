@@ -9,15 +9,14 @@ export const ZoomSlider = ({ zoom,setZoom }) => {
                 style={{ width: 200, height: 40 }}
                 minimumValue={0}
                 maximumValue={0.2}
-                // minimumTrackTintColor="#2979FF"
                 minimumTrackTintColor="black"
-                maximumTrackTintColor="#D1D1D6"
+                maximumTrackTintColor="black"
                 thumbTintColor="#2979FF"
                 value={0.2 - zoom}
                 onValueChange={(value) => setZoom(0.2 - value)}
             />
         </View>
-            <View style={{ position: "absolute", top: "75%", right: 5 ,transform:[{rotate:"-90deg"}]}}>
+            <View style={{ position: "absolute", top: "65%", right: 5 ,transform:[{rotate:"-90deg"}]}}>
             <Text style={{fontSize:20}}>Zoom</Text>
         </View>
         </>
