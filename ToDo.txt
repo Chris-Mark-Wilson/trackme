@@ -10,8 +10,8 @@ reasonably across the journey
 
 pause button for route route map
 
+change text colour to white or light blue when in satellite mode
 
-offer satellite/standard/hybrid maps
 create 'are you sure' modal for delete trip buttons
 
 
