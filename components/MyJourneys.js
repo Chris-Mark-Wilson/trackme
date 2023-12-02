@@ -130,7 +130,7 @@ export const MyJourneys = ({ navigation }) => {
 
           {selectedJourney.startPoint && routePoints[index] && (
             <>
-              <Polyline coordinates={[...routePoints]} strokeWidth={2} />
+              <Polyline coordinates={[...routePoints]} strokeWidth={4}strokeColor={mapStyle==="standard"?"black":"red"} />
               <Marker
                 title="start"
                 coordinate={selectedJourney.startPoint}
@@ -150,10 +150,11 @@ export const MyJourneys = ({ navigation }) => {
           )}
         </MapView>
         {/** vertical slider for zoom level -----------------------------------------------------------*/}
-        <ZoomSlider zoom={zoom} setZoom={setZoom} />
-           {!isMobile&& <SeekSlider index={index} setIndex={setIndex} maxIndex={routePoints.length-1}/>}
+        <ZoomSlider zoom={zoom} setZoom={setZoom} mapStyle={mapStyle}/>
+           {!isMobile&& <SeekSlider index={index} setIndex={setIndex} maxIndex={routePoints.length-1} mapStyle={mapStyle}/>}
         <Text
           style={{
+            color:mapStyle==="standard"?"black":"white",
             position: "absolute",
             top: 0,
             left: 10,
@@ -169,24 +170,24 @@ export const MyJourneys = ({ navigation }) => {
         {/**info box */}
         {/**--------------------------------------------------------------------------------------------- */}
         {routePoints[index] && ( //if route points exist show info
-          <View style={styles.info}>
+          <View style={{...styles.info,borderColor:mapStyle==="standard"?"black":"white"}}>
             {/* display date of cursor point */}
-            <Text style={styles.description}>
+            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Date: {new Date(cursor.timestamp).toLocaleDateString()}
             </Text>
             {/* display time of cursor point */}
             <Text
               style={
                 isMobile
-                  ? { ...styles.description, color: "blue", borderWidth: 1 }
-                  : { ...styles.description, color: "black" }
+                  ? { ...styles.description, color: mapStyle==="standard"?"blue":"cyan", borderWidth: 1 }
+                  : { ...styles.description, color: mapStyle==="standard"?"black":"white" }
               }
             >
               Time: {new Date(cursor.timestamp).toLocaleTimeString()}
             </Text>
 
             {/* add up distances between points*/}
-            <Text style={styles.description}>
+            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Total Distance:{" "}
               {(
                 routePoints.reduce((acc, point, index, array) => {
@@ -198,7 +199,7 @@ export const MyJourneys = ({ navigation }) => {
               ).toFixed(2)}{" "}
               miles
             </Text>
-            <Text style={styles.description}>
+            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Total Time:{" "}
               {secondsToTimeString(
                 (selectedJourney.endTime - selectedJourney.startTime) / 1000
@@ -206,7 +207,7 @@ export const MyJourneys = ({ navigation }) => {
             </Text>
 
             {/*add up distance to cursor */}
-            <Text style={styles.description}>
+            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Distance covered:{" "}
               {(
                 routePoints
@@ -222,7 +223,7 @@ export const MyJourneys = ({ navigation }) => {
             </Text>
 
             {/*Calculate and display local speed */}
-            <Text style={styles.description}>
+            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Speed:{" "}
               {(
                 (getDistance(cursor, routePoints[index + 1]) /
@@ -234,7 +235,7 @@ export const MyJourneys = ({ navigation }) => {
             </Text>
 
             {/* calculate and display average journey speed**/}
-            <Text style={styles.description}>
+            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Average trip speed:{" "}
               {(
                 (routePoints.reduce((acc, point, index, array) => {
@@ -259,6 +260,7 @@ export const MyJourneys = ({ navigation }) => {
           setIndex={setIndex}
           setIsMobile={setIsMobile}
           setCursor={setCursor}
+          mapStyle={mapStyle}
         />
         {/* //display speed multipler if mobile */}
         {isMobile && (
@@ -271,6 +273,7 @@ export const MyJourneys = ({ navigation }) => {
               textAlign: "center",
               marginTop: 20,
               fontWeight: "bold",
+              color: mapStyle==="standard"?"black":"white",
             }}
           >
             Speed: {(1000 / speed).toFixed(2)} x{" "}

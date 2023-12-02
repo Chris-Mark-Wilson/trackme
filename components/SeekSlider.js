@@ -2,7 +2,7 @@
 import Slider from '@react-native-community/slider';
 import { View,StyleSheet,Text } from 'react-native';
 
-export const SeekSlider = ({ index,setIndex,maxIndex }) => {
+export const SeekSlider = ({ index,setIndex,maxIndex,mapStyle }) => {
   return (
     <>
       <View style={styles.verticalSlider}>
@@ -11,9 +11,9 @@ export const SeekSlider = ({ index,setIndex,maxIndex }) => {
           minimumValue={0}
           maximumValue={maxIndex - 1}
           step={1}
-          minimumTrackTintColor="black"
-          maximumTrackTintColor="black"
-          thumbTintColor="#2979FF"
+          minimumTrackTintColor={mapStyle==="standard"?"black":"white"}
+          maximumTrackTintColor={mapStyle==="standard"?"black":"white"}
+          thumbTintColor={mapStyle==="standard"?"#2979FF":"red"}
           value={index}
           onValueChange={(value) => setIndex(value)}
         />
@@ -25,7 +25,7 @@ export const SeekSlider = ({ index,setIndex,maxIndex }) => {
           left: "40%",
         }}
       >
-        <Text style={{ fontSize: 20 }}>Trip Seek</Text>
+        <Text style={{ fontSize: 20 ,color:mapStyle==="standard"?"black":"white"}}>Trip Seek</Text>
       </View>
     </>
   );

@@ -2,7 +2,7 @@
 
 tidy up journey list, display more info per journey
 
-remove clear all jpurneys button
+remove clear all journeys button
 
 
 divide journey into 100 points for seek so it moves
@@ -10,8 +10,13 @@ reasonably across the journey
 
 pause button for route route map
 
-change text colour to white or light blue when in satellite mode
 
+
+
+
+
+create 'are you sure' modal for delete trip buttons,
+replace delete buttons with a checkbox, once any have been checked show delete button, then show modal to check sure
 create 'are you sure' modal for delete trip buttons
 
 
