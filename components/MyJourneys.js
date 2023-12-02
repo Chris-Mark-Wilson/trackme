@@ -5,10 +5,12 @@ import MapView, { Polyline, Marker } from 'react-native-maps';
 import { PROVIDER_GOOGLE } from 'react-native-maps';
 import {getDistance} from 'geolib';
 import { Dimensions } from 'react-native';
-import VerticalSlider from 'rn-vertical-slider';
+
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { ControlButtons } from './ControlButtons';
 import { secondsToTimeString } from '../utils/secondsToTimeString';
+import { VerticalSlider } from './VerticalSlider';
+
 
 
 
@@ -141,25 +143,9 @@ export const MyJourneys = ({ navigation }) => {
             )}
           </MapView>
           {/** vertical slider for zoom level -----------------------------------------------------------*/}
-          <View style={styles.verticalSlider}>
-            <VerticalSlider
-              value={0.205-zoom}
-              onChange={(value) => setZoom(0.205-value)}
-              height={200}
-              width={40}
-              step={0.005}
-              min={0}
-              max={0.2}
-              borderRadius={5}
-              minimumTrackTintColor="#2979FF"
-              maximumTrackTintColor="#D1D1D6"
-              showIndicator={true}
-              ballIndicatorColor="#2979FF"
-              ballIndicatorTextColor="#fff"
-              ballIndicatorWidth={80}
-              ballIndicatorHeight={40}
-            />
-          </View>
+       <VerticalSlider zoom={zoom} setZoom={setZoom} />
+            
+        
           <Text
             style={{
               position: "absolute",
@@ -395,83 +381,72 @@ export const MyJourneys = ({ navigation }) => {
 
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        marginTop: 5,
-        fontSize: 20,
-        borderColor: "black",
+  container: {
+    flex: 1,
+    marginTop: 5,
+    fontSize: 20,
+    borderColor: "black",
+  },
+  listItem: { flexDirection: "row", justifyContent: "space-between" },
 
-    },
-    listItem:
-        { flexDirection: "row", justifyContent: "space-between" },
+  item: {
+    padding: 20,
+    marginTop: 5,
+    fontSize: 15,
+  },
+  deleteButton: {
+    width: 200,
+    height: 40,
+    fontSize: 10,
+    textAlign: "center",
 
-    item: {
-        padding: 20,
-        marginTop: 5,
-        fontSize: 15,
-    },
-    deleteButton: {
-        width: 200,
-        height: 40,
-        fontSize: 10,
-        textAlign: "center",
+    alignSelf: "center",
+    color: "blue",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+  footer: {
+    height: 150,
+    flexDirection: "column",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: 5,
+    marginRight: 5,
+  },
+  info: {
+    position: "absolute",
+    top: 50,
+    left: 0,
+    height: 150,
+    width: "90%",
+    justifyContent: "center",
+    borderColor: "black",
+    borderWidth: 1,
+    flexDirection: "column",
+    justifyContent: "space-around",
+    alignItems: "center",
+    marginTop: 5,
+    marginBottom: 5,
+    marginLeft: "5%",
+    marginRight: "5%",
+    opacity: 1,
+  },
+  description: {
+    fontSize: 15,
+    textAlign: "center",
+    fontWeight: "bold",
+  },
 
-        alignSelf: "center",
-        color: "blue",
-        borderRadius: 20,
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: 5,
-        marginRight: 5,
-    },
-    map: {
-        width: "100%",
-        height: "100%",
-    },
-    footer: {
-        height: 150,
-        flexDirection: "column",
-        justifyContent: "space-around",
-        alignItems: "center",
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: 5,
-        marginRight: 5,
-    }
-    ,info:{
-        position: "absolute",
-        top:50,
-        left: 0,
-        height: 150,
-        width: "90%",
-        justifyContent: "center",
-        borderColor: "black",
-        borderWidth: 1,
-        flexDirection: "column",
-        justifyContent: "space-around",
-        alignItems: "center",
-        marginTop: 5,
-        marginBottom: 5,
-        marginLeft: "5%",
-        marginRight: "5%",
-        opacity:1
-
-    },
-    description:{
-        fontSize: 15,
-        textAlign: "center",
-        fontWeight: 'bold',
-     
-    },
-   
-    verticalSlider:{
-        position:"absolute",
-        top:"65%",
-        right:0,
-        height:"100%",
-        width:80,
-        // zIndex:100
-    }
+  
 });
