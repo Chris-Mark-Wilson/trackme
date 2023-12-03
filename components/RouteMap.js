@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
   stopButton: {
     position: "absolute",
     bottom: 50,
-    right: 50,
+    left: "65%",
   },
   verticalSlider: {
     position: "absolute",

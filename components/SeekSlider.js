@@ -5,9 +5,10 @@ import { View,StyleSheet,Text } from 'react-native';
 export const SeekSlider = ({ index,setIndex,maxIndex,mapStyle }) => {
   return (
     <>
-      <View style={styles.verticalSlider}>
+      {mapStyle!="standard"&&<View style={{...styles.horizontalSlider,backgroundColor:"grey",opacity:0.7,zIndex:1,borderWidth:1,borderColor:"white",borderRadius:5}}></View>}
+      <View style={{...styles.horizontalSlider,zIndex:2}}>
         <Slider
-          style={{ width: 200, height: 40 }}
+          style={{ width: "100%", height: 30 }}
           minimumValue={0}
           maximumValue={maxIndex - 1}
           step={1}
@@ -18,11 +19,19 @@ export const SeekSlider = ({ index,setIndex,maxIndex,mapStyle }) => {
           onValueChange={(value) => setIndex(value)}
         />
       </View>
+      {mapStyle!="standard"&&<View style={{position:"absolute",top:"95%",left:"28%",width:"30%",height:30,backgroundColor:"grey",opacity:0.7,zIndex:1,borderWidth:1,borderColor:"white",borderRadius:5}}></View>}
       <View
         style={{
+          flex:1,
           position: "absolute",
           top: "95%",
-          left: "40%",
+          left: "28%",
+          width:"30%",
+          height: "5%",
+          zIndex:2,
+          justifyContent:"center",
+          alignItems:"center",
+          
         }}
       >
         <Text style={{ fontSize: 20 ,color:mapStyle==="standard"?"black":"white"}}>Trip Seek</Text>
@@ -32,10 +41,12 @@ export const SeekSlider = ({ index,setIndex,maxIndex,mapStyle }) => {
 }
 
 const styles = StyleSheet.create({
-    verticalSlider: {
+    horizontalSlider: {
         position: "absolute",
         top: "90%",
-        left: "20%",
+        left: "10%",
+        width:"60%",
+        height: "5%",
        
       },
 })

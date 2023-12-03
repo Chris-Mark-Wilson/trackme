@@ -150,21 +150,7 @@ export const MyJourneys = ({ navigation }) => {
         {/** vertical slider for zoom level -----------------------------------------------------------*/}
         <ZoomSlider zoom={zoom} setZoom={setZoom} mapStyle={mapStyle}/>
            {!isMobile&& <SeekSlider index={index} setIndex={setIndex} maxIndex={routePoints.length-1} mapStyle={mapStyle}/>}
-        <Text
-          style={{
-            color:mapStyle==="standard"?"black":"white",
-            position: "absolute",
-            top: 0,
-            left: 10,
-            fontSize: 20,
-            textAlign: "center",
-            marginTop: 20,
-            fontWeight: "bold",
-          }}
-        >
-          Tap map to go back
-        </Text>
-
+       
         {/**info box */}
           {/**--------------------------------------------------------------------------------------------- */}
           {routePoints[index] && ( //if route points exist show info
@@ -446,7 +432,7 @@ const styles = StyleSheet.create({
   },
   info: {
     position: "absolute",
-    top: 50,
+    top: 5,
     left: 0,
     height: 150,
     width: "90%",
@@ -461,6 +447,7 @@ const styles = StyleSheet.create({
     marginLeft: "5%",
     marginRight: "5%",
     opacity: 1,
+    borderRadius: 10,
   },
   description: {
     fontSize: 15,
@@ -470,7 +457,7 @@ const styles = StyleSheet.create({
   mapToggle:{
     position:'absolute',
     top:10,
-    left:"70%",
+    left:"80%",
     zIndex:100
   }
 });

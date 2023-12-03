@@ -1,10 +1,12 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Entypo } from '@expo/vector-icons';
+import { getAreaOfPolygon } from 'geolib';
 
 export const ControlButtons = ({ routePoints, setSpeed, isMobile, setIsMobile, setIndex, setCursor, mapStyle }) => {
-    return (
-        <View style={styles.controlButtons}>
+    return (<>
+        {mapStyle!="standard"&&<View style={{...styles.controlButtons,backgroundColor:"grey",opacity:0.7,zIndex:1,borderWidth:1,borderColor:"white",borderRadius:5}}></View>}
+        <View style={{...styles.controlButtons,zIndex:2}}>
             <Pressable onPressIn={() => {
                 setSpeed((oSpeed) => {
                     if (oSpeed < 1000) { return oSpeed + 100 } else return oSpeed
@@ -32,17 +34,18 @@ export const ControlButtons = ({ routePoints, setSpeed, isMobile, setIsMobile, s
                 })
             }}><Entypo name="controller-fast-forward" size={36} color={mapStyle === "standard" ? "black" : "white"} /></Pressable>
         </View>
+        </>
     )
 }
 
 const styles = {
     controlButtons: {
         position: "absolute",
-        bottom: 50,
-        left: 0,
-        height: 60,
-        width: "80%",
-        marginLeft: "10%",
+        bottom: "10%",
+        left: "10%",
+        height: 40,
+        width: "60%",
+        
         flexDirection: "row",
         justifyContent: "space-around",
         alignItems: "center"

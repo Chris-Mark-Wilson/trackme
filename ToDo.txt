@@ -10,6 +10,8 @@ reasonably across the journey
 
 pause button for route route map
 
+store points of interest? title and descriptiom, another array of objects?
+
 
 
 
