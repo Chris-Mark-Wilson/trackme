@@ -28,7 +28,6 @@ import { MapToggle } from "./MapToggle";
 export const MyJourneys = ({ navigation }) => {
   const windowWidth = Dimensions.get("window").width;
   const windowHeight = Dimensions.get("window").height;
-  const [ASPECT_RATIO, setASPECT_RATIO] = useState(windowWidth / windowHeight);
   const [zoom, setZoom] = useState(0.005);
   const [isLoading, setIsLoading] = useState(true);
   const [journeyList, setJourneyList] = useState([]);
@@ -46,14 +45,13 @@ export const MyJourneys = ({ navigation }) => {
       getAllJourneys()
         .then((journeys) => {
           setJourneyList(journeys);
-          console.log("got all journeys");
-          console.log(ASPECT_RATIO, "aspect ratio");
           setIsLoading(false);
         })
         .catch((error) => {
           console.log(error, "error in my journeys");
         });
     });
+    //cleanup
     return () => {
       navigation.removeListener("focus", () => {});
     };
@@ -168,13 +166,16 @@ export const MyJourneys = ({ navigation }) => {
         </Text>
 
         {/**info box */}
-        {/**--------------------------------------------------------------------------------------------- */}
-        {routePoints[index] && ( //if route points exist show info
-          <View style={{...styles.info,borderColor:mapStyle==="standard"?"black":"white"}}>
-            {/* display date of cursor point */}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
-              Date: {new Date(cursor.timestamp).toLocaleDateString()}
-            </Text>
+          {/**--------------------------------------------------------------------------------------------- */}
+          {routePoints[index] && ( //if route points exist show info
+            <>
+              <View style={{ ...styles.info, opacity: 0.7, zIndex: 1, backgroundColor: "grey" }}></View>
+
+              <View style={{ ...styles.info, zIndex: 2, opacity: 1, borderColor: mapStyle === "standard" ? "black" : "white", }}>
+                {/* display date of cursor point */}
+                <Text style={{ ...styles.description, color: mapStyle === "standard" ? "black" : "white" }}>
+                  Date: {new Date(cursor.timestamp).toLocaleDateString()}
+                </Text>
             {/* display time of cursor point */}
             <Text
               style={
@@ -186,7 +187,7 @@ export const MyJourneys = ({ navigation }) => {
               Time: {new Date(cursor.timestamp).toLocaleTimeString()}
             </Text>
 
-            {/* add up distances between points*/}
+            {/* add up distances between points, display total distance*/}
             <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Total Distance:{" "}
               {(
@@ -199,6 +200,8 @@ export const MyJourneys = ({ navigation }) => {
               ).toFixed(2)}{" "}
               miles
             </Text>
+
+            {/* display total time of journey */}
             <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Total Time:{" "}
               {secondsToTimeString(
@@ -206,7 +209,7 @@ export const MyJourneys = ({ navigation }) => {
               )}
             </Text>
 
-            {/*add up distance to cursor */}
+            {/*add up distance to cursor, display distance travelled*/}
             <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Distance covered:{" "}
               {(
@@ -251,6 +254,8 @@ export const MyJourneys = ({ navigation }) => {
               mph{" "}
             </Text>
           </View>
+          </>
+
         )}
         {/**--------------------------------------------------------------------------------------------- */}
         <ControlButtons
