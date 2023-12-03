@@ -19,11 +19,12 @@ import { getDistance } from "geolib";
 import { Dimensions } from "react-native";
 
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ControlButtons } from "./ControlButtons";
+import { ControlButtons } from "./MyJourneyComponents/ControlButtons";
 import { secondsToTimeString } from "../utils/secondsToTimeString";
-import { ZoomSlider } from "./ZoomSlider";
-import { SeekSlider } from "./SeekSlider";
-import { MapToggle } from "./MapToggle";
+import { ZoomSlider } from "./SharedComponents/ZoomSlider";
+import { SeekSlider } from "./MyJourneyComponents/SeekSlider";
+import { MapToggle } from "./SharedComponents/MapToggle";
+import { InfoBox } from "./MyJourneyComponents/InfoBox";
 
 export const MyJourneys = ({ navigation }) => {
   const windowWidth = Dimensions.get("window").width;
@@ -154,94 +155,7 @@ export const MyJourneys = ({ navigation }) => {
         {/**info box */}
           {/**--------------------------------------------------------------------------------------------- */}
           {routePoints[index] && ( //if route points exist show info
-            <>
-              <View style={{ ...styles.info, opacity: 0.7, zIndex: 1, backgroundColor: "grey" }}></View>
-
-              <View style={{ ...styles.info, zIndex: 2, opacity: 1, borderColor: mapStyle === "standard" ? "black" : "white", }}>
-                {/* display date of cursor point */}
-                <Text style={{ ...styles.description, color: mapStyle === "standard" ? "black" : "white" }}>
-                  Date: {new Date(cursor.timestamp).toLocaleDateString()}
-                </Text>
-            {/* display time of cursor point */}
-            <Text
-              style={
-                isMobile
-                  ? { ...styles.description, color: mapStyle==="standard"?"blue":"cyan", borderWidth: 1 }
-                  : { ...styles.description, color: mapStyle==="standard"?"black":"white" }
-              }
-            >
-              Time: {new Date(cursor.timestamp).toLocaleTimeString()}
-            </Text>
-
-            {/* add up distances between points, display total distance*/}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
-              Total Distance:{" "}
-              {(
-                routePoints.reduce((acc, point, index, array) => {
-                  if (index < array.length - 1) {
-                    acc += getDistance(point, array[index + 1]);
-                  }
-                  return acc;
-                }, 0) * 0.000621371
-              ).toFixed(2)}{" "}
-              miles
-            </Text>
-
-            {/* display total time of journey */}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
-              Total Time:{" "}
-              {secondsToTimeString(
-                (selectedJourney.endTime - selectedJourney.startTime) / 1000
-              )}
-            </Text>
-
-            {/*add up distance to cursor, display distance travelled*/}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
-              Distance covered:{" "}
-              {(
-                routePoints
-                  .slice(0, index + 1)
-                  .reduce((acc, point, index, array) => {
-                    if (index < array.length - 1) {
-                      acc += getDistance(point, array[index + 1]);
-                    }
-                    return acc;
-                  }, 0) * 0.000621371
-              ).toFixed(2)}{" "}
-              miles
-            </Text>
-
-            {/*Calculate and display local speed */}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
-              Speed:{" "}
-              {(
-                (getDistance(cursor, routePoints[index + 1]) /
-                  ((routePoints[index + 1].timestamp - cursor.timestamp) /
-                    1000)) *
-                2.23694
-              ).toFixed(2)}{" "}
-              mph{" "}
-            </Text>
-
-            {/* calculate and display average journey speed**/}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
-              Average trip speed:{" "}
-              {(
-                (routePoints.reduce((acc, point, index, array) => {
-                  if (index < array.length - 1) {
-                    acc += getDistance(point, array[index + 1]);
-                  }
-                  return acc;
-                }, 0) /
-                  ((selectedJourney.endTime - selectedJourney.startTime) /
-                    1000)) *
-                2.23694
-              ).toFixed(2)}{" "}
-              mph{" "}
-            </Text>
-          </View>
-          </>
-
+         <InfoBox routePoints={routePoints} index={index} mapStyle={mapStyle} cursor={cursor} isMobile={isMobile} selectedJourney={selectedJourney} list={false} position={{top:5,left:0}}/>
         )}
         {/**--------------------------------------------------------------------------------------------- */}
         <ControlButtons
@@ -430,30 +344,8 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
-  info: {
-    position: "absolute",
-    top: 5,
-    left: 0,
-    height: 150,
-    width: "90%",
-    justifyContent: "center",
-    borderColor: "black",
-    borderWidth: 1,
-    flexDirection: "column",
-    justifyContent: "space-around",
-    alignItems: "center",
-    marginTop: 5,
-    marginBottom: 5,
-    marginLeft: "5%",
-    marginRight: "5%",
-    opacity: 1,
-    borderRadius: 10,
-  },
-  description: {
-    fontSize: 15,
-    textAlign: "center",
-    fontWeight: "bold",
-  },
+ 
+ 
   mapToggle:{
     position:'absolute',
     top:10,

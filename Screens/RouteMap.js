@@ -9,9 +9,9 @@ import { addJourney } from "../utils/dbApi";
 import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { ZoomSlider } from "./ZoomSlider";
-import { Stopwatch } from "./Stopwatch";
-import {MapToggle} from './MapToggle'
+import { ZoomSlider } from "./SharedComponents/ZoomSlider";
+import { Stopwatch } from "./RouteMapComponents/Stopwatch";
+import {MapToggle} from './SharedComponents/MapToggle'
 
 import { AppState } from "react-native";
 

@@ -1,5 +1,5 @@
 import {View,Text,StyleSheet} from 'react-native'
-import {secondsToTimeString} from '../utils/secondsToTimeString'
+import {secondsToTimeString} from '../../utils/secondsToTimeString'
 
 export const Stopwatch = ({routeData}) =>{
     const time=secondsToTimeString((routeData.points[routeData.points.length-1].timestamp-routeData.startTime)/1000)

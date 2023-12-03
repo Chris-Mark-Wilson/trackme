@@ -6,8 +6,8 @@ import { NavigationContainer } from "@react-navigation/native";
 
 
 import { RouteProvider } from './contexts/routeContext';
-import { RouteMap } from './components/RouteMap';
-import { MyJourneys } from './components/MyJourneys';
+import { RouteMap } from './Screens/RouteMap';
+import { MyJourneys } from './Screens/MyJourneys';
 
 
 const Drawer = createDrawerNavigator();
