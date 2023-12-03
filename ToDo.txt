@@ -1,9 +1,4 @@
-export components out for clarity
-
-
 tidy up journey list, display more info per journey
-
-remove clear all journeys button
 
 move speed multiplier when isMobile
 
@@ -15,16 +10,11 @@ pause button for route route map
 store points of interest? title and descriptiom, another array of objects?
 add picture taking functionality to points of interest..
 
-settings page - quick exercise, hiking trip, holidaay recording etc..
-
-
-
-
-
-
+settings page - quick exercise, hiking trip, holiday recording etc..
 
 create 'are you sure' modal for delete trip buttons,
 replace delete buttons with a checkbox, once any have been checked show delete button, then show modal to check sure
-create 'are you sure' modal for delete trip buttons
+
+
 
 

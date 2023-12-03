@@ -19,20 +19,9 @@ export const SeekSlider = ({ index,setIndex,maxIndex,mapStyle }) => {
           onValueChange={(value) => setIndex(value)}
         />
       </View>
-      {mapStyle!="standard"&&<View style={{position:"absolute",top:"95%",left:"28%",width:"30%",height:30,backgroundColor:"grey",opacity:0.7,zIndex:1,borderWidth:1,borderColor:"white",borderRadius:5}}></View>}
+      {mapStyle!="standard"&&<View style={{...styles.tripSeek,backgroundColor:"grey",opacity:0.7,zIndex:1,borderWidth:1,borderColor:"white",borderRadius:5}}></View>}
       <View
-        style={{
-          flex:1,
-          position: "absolute",
-          top: "95%",
-          left: "28%",
-          width:"30%",
-          height: "5%",
-          zIndex:2,
-          justifyContent:"center",
-          alignItems:"center",
-          
-        }}
+        style={styles.tripSeek}
       >
         <Text style={{ fontSize: 20 ,color:mapStyle==="standard"?"black":"white"}}>Trip Seek</Text>
       </View>
@@ -49,4 +38,15 @@ const styles = StyleSheet.create({
         height: "5%",
        
       },
+      tripSeek:{
+       
+        position: "absolute",
+        top: "95%",
+        left: "28%",
+        width:"30%",
+        height: "5%",
+        zIndex:2,
+        justifyContent:"center",
+        alignItems:"center",
+      }
 })

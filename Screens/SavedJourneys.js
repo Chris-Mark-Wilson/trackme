@@ -8,10 +8,10 @@ import {
   Button,
   StyleSheet,
 } from "react-native";
-import { SavedJourneyList } from "./MyJourneyComponents/SavedJourneyList";
-import { JourneyMapView } from "./MyJourneyComponents/JourneyMapView";
+import { SavedJourneyList } from "./SavedJourneysComponents/SavedJourneyList";
+import { SavedJourneyMapView } from "./SavedJourneysComponents/SavedJourneyMapView";
 
-export const MyJourneys = ({ navigation }) => {
+export const SavedJourneys = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedJourney, setSelectedJourney] = useState(null);
   const [cursor, setCursor] = useState(null);
@@ -85,7 +85,7 @@ export const MyJourneys = ({ navigation }) => {
   return isLoading ? (
     <Text>Loading...</Text>
   ) : selectedJourney && cursor.latitude ? (
-    <JourneyMapView
+    <SavedJourneyMapView
       cursor={cursor}
       selectedJourney={selectedJourney}
       setSelectedJourney={setSelectedJourney}

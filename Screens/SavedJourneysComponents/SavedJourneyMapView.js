@@ -9,7 +9,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { InfoBox } from "./InfoBox";
 import { useState,useEffect } from "react";
 
-export const JourneyMapView = ({cursor,selectedJourney,setSelectedJourney,routePoints,index,setIndex,setCursor,isMobile,setIsMobile,speed,setSpeed}) => {
+export const SavedJourneyMapView = ({cursor,selectedJourney,setSelectedJourney,routePoints,index,setIndex,setCursor,isMobile,setIsMobile,speed,setSpeed}) => {
 
     const [zoom, setZoom] = useState(0.005);
     const [mapStyle, setMapStyle] = useState("standard");
@@ -84,24 +84,17 @@ export const JourneyMapView = ({cursor,selectedJourney,setSelectedJourney,routeP
         />
         {/* //display speed multipler if mobile */}
         {isMobile && (
-          <Text
-            style={{
-              position: "absolute",
-              bottom: 10,
-              left: 30,
-              fontSize: 20,
-              textAlign: "center",
-              marginTop: 20,
-              fontWeight: "bold",
-              color: mapStyle==="standard"?"black":"white",
-            }}
-          >
-            Speed: {(1000 / speed).toFixed(2)} x{" "}
-          </Text>
+          <>
+          {mapStyle!="standard"&&<View style={{...styles.speedMultiplier,backgroundColor:"grey",opacity:0.7,zIndex:1,borderWidth:1,borderColor:"white",borderRadius:5}}></View>}
+          <View style={{...styles.speedMultiplier,zIndex:2,color: mapStyle==="standard"?"black":"white"}}>
+          <Text style={{fontSize:20,fontWeight:"bold",color:mapStyle!="standard"?"white":"black"}}>Speed:{(1000 / speed).toFixed(2)} x</Text>
+          </View>
+          </>
         )}
           <View style={styles.mapToggle}>
           <MapToggle mapStyle={mapStyle} setMapStyle={setMapStyle} />
           </View>
+          
       </View>
     </GestureHandlerRootView>
     )
@@ -118,8 +111,15 @@ const styles=StyleSheet.create({
         width: "100%",
         height: "100%",
       },
-    
-     
+    speedMultiplier: {
+      position: "absolute",
+      bottom: "5%",
+      left: "25%",
+    justifyContent:"center",
+      alignItems: "center",
+      width:"40%",
+      height:"5%"
+    },  
      
       mapToggle:{
         position:'absolute',
