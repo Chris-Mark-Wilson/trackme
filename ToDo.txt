@@ -13,6 +13,10 @@ reasonably across the journey
 pause button for route route map
 
 store points of interest? title and descriptiom, another array of objects?
+add picture taking functionality to points of interest..
+
+settings page - quick exercise, hiking trip, holidaay recording etc..
+
 
 
 
