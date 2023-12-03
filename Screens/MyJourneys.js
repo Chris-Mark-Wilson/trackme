@@ -126,7 +126,7 @@ export const MyJourneys = ({ navigation }) => {
           mapType={mapStyle}
         >
 
-
+{/**--------------------------------------------------------------------------------------------- */ }
           {selectedJourney.startPoint && routePoints[index] && (
             <>
               <Polyline coordinates={[...routePoints]} strokeWidth={4}strokeColor={mapStyle==="standard"?"black":"red"} />

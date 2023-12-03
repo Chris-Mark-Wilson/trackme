@@ -96,6 +96,7 @@ export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJo
 };
 const styles = StyleSheet.create({
     info: {
+       
         position: "absolute",
         height: 150,
         width: "90%",
