@@ -1,8 +1,11 @@
 import {View,Text,FlatList,Pressable,Button,StyleSheet} from 'react-native';
 import { deleteJourney } from '../../utils/dbApi';
+import Checkbox from 'expo-checkbox';
+import { useState } from 'react';
 
 
 export const SavedJourneyList = ({setCursor,setSelectedJourney,journeyList,setJourneyList}) => {
+  const [isChecked, setChecked] = useState(false);
 
     ///////////mini components///////////////////////////
     const MyItemSeparator = () => {
@@ -85,7 +88,9 @@ export const SavedJourneyList = ({setCursor,setSelectedJourney,journeyList,setJo
                 >{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text>
 
                 <View style={styles.deleteButton}>
-                  <Button
+                <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} />
+    
+                  {/* <Button
                     color={"red"}
                     title="Delete"
                     onPress={() => {
@@ -96,7 +101,7 @@ export const SavedJourneyList = ({setCursor,setSelectedJourney,journeyList,setJo
                         )
                       );
                     }}
-                  />
+                  /> */}
                 </View>
               </View>
             </Pressable>
