@@ -45,12 +45,12 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
         
       }}
     >
-    {journeyList.length?`${journeyList.length} journey${journeyList.length!=1?"s":""} found`:""}
+    {journeyList.length?`${journeyList.length} journey${journeyList.length!=1?"s":""} found`:"such empty..."}
     </Text>
   )
   const Header = () => (
     <View style={{ alignItems: "center",flexDirection:"row", justifyContent:"space-between",paddingLeft:80,paddingRight:20}}>
-      <Text
+      {journeyList.length?<><Text
         style={{
           fontSize: 20,
           textAlign: "center",
@@ -65,7 +65,7 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
           textAlign: "center",
           fontWeight: "bold",
         
-        }}>Select</Text>
+        }}>Select</Text></>:<Text> </Text>}
 
     </View>
   )
