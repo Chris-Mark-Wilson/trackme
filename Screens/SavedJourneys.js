@@ -114,8 +114,7 @@ export const SavedJourneys = ({ navigation }) => {
 
 const styles=StyleSheet.create({
   navDelete: {
-    borderWidth: 1,
-    borderColor:"blue",
+ 
     height: 50,
     flexDirection: "column",
     justifyContent: "space-around",

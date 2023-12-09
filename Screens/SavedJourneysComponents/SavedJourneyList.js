@@ -23,7 +23,7 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
   const MyItemSeparator = () => {
     return (
       <View
-        style={{ height: 1, backgroundColor: "grey", marginHorizontal: 10 }}
+        style={{ height: 5, backgroundColor: "grey", marginHorizontal: 10 }}
       />
     );
   };
@@ -41,21 +41,21 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
         fontSize: 20,
         textAlign: "center",
         marginBottom: 20,
-        fontWeight: "bold",
-        textDecorationLine: "underline",
+        fontWeight: "light",
+        
       }}
     >
-      End List
+      {journeyList.length} journeys found
     </Text>
   )
   const Header = () => (
-    <View style={{ alignItems: "center",borderWidth:1,borderColor:"green",flexDirection:"row", justifyContent:"space-between",paddingLeft:20,paddingRight:20}}>
+    <View style={{ alignItems: "center",flexDirection:"row", justifyContent:"space-between",paddingLeft:80,paddingRight:20}}>
       <Text
         style={{
           fontSize: 20,
           textAlign: "center",
           fontWeight: "bold",
-          textDecorationLine: "underline",
+         
         }}
       >
         Details
@@ -64,7 +64,7 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
           fontSize: 20,
           textAlign: "center",
           fontWeight: "bold",
-          textDecorationLine: "underline",
+        
         }}>Select</Text>
 
     </View>
@@ -124,7 +124,8 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
 
     </View>
     {journeysSelected&&
-    <Button style={styles.deleteButton} title="Delete Selected" onPress={() => {
+    <View style={styles.deleteButton}>
+    <Button color={"red"} title="Delete Selected" onPress={() => {
       selected.forEach((item, index) => {
         if (item === true) {
           deleteJourney(journeyList[index].startTime);
@@ -136,25 +137,26 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
         }
       });
     }
-  } />}
+  } />
+  </View>}
   </>
   )
 }
 const styles = StyleSheet.create({
   container: {
     flex: 1, //100% of screen, space between items
-    borderWidth: 1,
+
     marginTop: 5,
     fontSize: 20,
-    borderColor: "black",
+   
   },
 
-  listView: { borderWidth: 1, borderColor: "green", flexDirection: "row", justifyContent: "space-between" },
+  listView: { borderWidth: 1, borderColor: "black", flexDirection: "row", justifyContent: "space-between",marginHorizontal:10 },
 
   listInfo: {
     borderWidth: 1,
     borderColor: "red",
-    padding: 20,
+    padding: 10,
     marginTop: 5,
     fontSize: 15,
   },
