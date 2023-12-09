@@ -46,7 +46,7 @@ export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJo
             </Text>
 
             {/*add up distance to cursor, display distance travelled*/}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
+            {!list&&<Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Distance covered:{" "}
               {(
                 routePoints
@@ -59,7 +59,7 @@ export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJo
                   }, 0) * 0.000621371
               ).toFixed(2)}{" "}
               miles
-            </Text>
+            </Text>}
 
             {/*Calculate and display local speed */}
             {!list&&<Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>

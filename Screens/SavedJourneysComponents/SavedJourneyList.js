@@ -92,9 +92,7 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
               }}
             >
               <View style={styles.listView}>
-                {/* <Text
-                  style={styles.listInfo}
-                >{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text> */}
+              
                 <InfoBox routePoints={item.points} index={0} mapStyle={"standard"} cursor={{latitude: item.startPoint.latitude,longitude: item.startPoint.longitude,timestamp: item.points[1].timestamp}}
 
                  isMobile={false} selectedJourney={item} list={true} position={{top:5,left:0}}/>
@@ -123,12 +121,13 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
 
 
     </View>
-    {journeysSelected&&
+    {journeysSelected&&journeyList[0].startTime&&
     <View style={styles.deleteButton}>
     <Button color={"red"} title="Delete Selected" onPress={() => {
       selected.forEach((item, index) => {
         if (item === true) {
           deleteJourney(journeyList[index].startTime);
+          setJourneysSelected(false);
           setJourneyList(
             journeyList.filter(
               (journey) => journey.startTime !== journeyList[index].startTime

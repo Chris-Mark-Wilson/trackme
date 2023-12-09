@@ -158,7 +158,7 @@ export const RouteMap = ({ navigation }) => {
               points: [],
             };
           });
-          navigation.navigate("My Journeys");
+          navigation.navigate("Saved Journeys");
         }, 1000);
       })
       .catch((error) => {
