@@ -45,7 +45,7 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
         
       }}
     >
-      {journeyList.length} journeys found
+    {journeyList.length?`${journeyList.length} journey${journeyList.length!=1?"s":""} found`:""}
     </Text>
   )
   const Header = () => (
@@ -70,7 +70,17 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
     </View>
   )
   ////////////////////////////////////////////////////
-
+const deleteSelected =  () => {
+  const deleteArray=[...journeyList.map((item,index)=>selected[index]?item.startTime:null)]
+  console.log(deleteArray,"delete array")
+  deleteJourney(deleteArray)
+  .then((result)=>{
+   alert(`${deleteArray.length} journey${deleteArray.length>1?"s":""} deleted`)
+    setSelected([])
+    setJourneyList(result)
+  })
+  .catch(err=>console.log(err))
+}
 
   return (
     <>
@@ -121,22 +131,11 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
 
 
     </View>
-    {journeysSelected&&journeyList[0].startTime&&
+    {journeysSelected&&journeyList.length&&
     <View style={styles.deleteButton}>
-    <Button color={"red"} title="Delete Selected" onPress={() => {
-      selected.forEach((item, index) => {
-        if (item === true) {
-          deleteJourney(journeyList[index].startTime);
-          setJourneysSelected(false);
-          setJourneyList(
-            journeyList.filter(
-              (journey) => journey.startTime !== journeyList[index].startTime
-            )
-          );
-        }
-      });
-    }
-  } />
+    <Button color={"red"} title="Delete Selected" onPress={() =>     
+     deleteSelected()
+    } />
   </View>}
   </>
   )

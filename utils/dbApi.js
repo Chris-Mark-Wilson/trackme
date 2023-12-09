@@ -26,12 +26,12 @@ export const addJourney = async (journey) => {
         return Promise.reject(error);
     }
 }
-export const deleteJourney = async (startTime) => {
+export const deleteJourney = async (array) => {
     try {
         let myJourneys = await getAllJourneys();
-        let newJourneys = myJourneys.filter((journey) => journey.startTime !== startTime);
+        let newJourneys = myJourneys.filter((journey) => !array.includes(journey.startTime));
         await AsyncStorage.setItem('journeys', JSON.stringify(newJourneys));
-        return startTime;
+        return newJourneys;
     } catch (error) {
         console.log(error,"error in api delete journey");
         return Promise.reject(error);
