@@ -1,76 +1,85 @@
-import {View,Text,FlatList,Pressable,Button,StyleSheet} from 'react-native';
+import { View, Text, FlatList, Pressable, Button, StyleSheet } from 'react-native';
 import { deleteJourney } from '../../utils/dbApi';
 import Checkbox from 'expo-checkbox';
-import { useState } from 'react';
+import { InfoBox } from './InfoBox';
+import { useState,useEffect } from 'react';
 
 
-export const SavedJourneyList = ({setCursor,setSelectedJourney,journeyList,setJourneyList}) => {
-  const [isChecked, setChecked] = useState(false);
+export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, setJourneyList }) => {
+  //array holding checkbox values
+  const [selected, setSelected] = useState(new Array(journeyList.length).fill(false));
+ const [journeysSelected, setJourneysSelected] = useState(false);
+ 
+ useEffect(() => {
+  //show or hide delete button
+  if (selected.find((item) => item === true)) {
+    setJourneysSelected(true)
+  } else {
+    setJourneysSelected(false)
+  }
+ }, [selected])
 
-    ///////////mini components///////////////////////////
-    const MyItemSeparator = () => {
-        return (
-          <View
-            style={{ height: 1, backgroundColor: "grey", marginHorizontal: 10 }}
-          />
-        );
-      };
-    
-      const myListEmpty = () => {
-        return (
-          <View style={{ alignItems: "center" }}>
-            <Text style={styles.item}>No journey data found</Text>
-          </View>
-        );
-      };
-      const Footer = () => (
-        <Text
-          style={{
-            fontSize: 20,
-            textAlign: "center",
-            marginBottom: 20,
-            fontWeight: "bold",
-            textDecorationLine: "underline",
-          }}
-        >
-          End List
-        </Text>
-      )
-      const Header = () => (
-        <View style={{ alignItems: "center" }}>
-          <Text
-            style={{
-              fontSize: 30,
-              textAlign: "center",
-              marginTop: 20,
-              fontWeight: "bold",
-              textDecorationLine: "underline",
-            }}
-          >
-            All Journeys
-          </Text>
-          <Text
-            style={{
-              fontSize: 15,
-              textAlign: "center",
-              marginBottom: 20,
-              fontWeight: "bold",
-            }}
-          >
-            tap timestamp to view journey on map
-          </Text>
-        </View>
-      )
- ////////////////////////////////////////////////////
+  ///////////mini components///////////////////////////
+  const MyItemSeparator = () => {
+    return (
+      <View
+        style={{ height: 1, backgroundColor: "grey", marginHorizontal: 10 }}
+      />
+    );
+  };
+
+  const myListEmpty = () => {
+    return (
+      <View style={{ alignItems: "center" }}>
+        <Text style={styles.item}>No journey data found</Text>
+      </View>
+    );
+  };
+  const Footer = () => (
+    <Text
+      style={{
+        fontSize: 20,
+        textAlign: "center",
+        marginBottom: 20,
+        fontWeight: "bold",
+        textDecorationLine: "underline",
+      }}
+    >
+      End List
+    </Text>
+  )
+  const Header = () => (
+    <View style={{ alignItems: "center",borderWidth:1,borderColor:"green",flexDirection:"row", justifyContent:"space-between",paddingLeft:20,paddingRight:20}}>
+      <Text
+        style={{
+          fontSize: 20,
+          textAlign: "center",
+          fontWeight: "bold",
+          textDecorationLine: "underline",
+        }}
+      >
+        Details
+      </Text>
+      <Text style={{
+          fontSize: 20,
+          textAlign: "center",
+          fontWeight: "bold",
+          textDecorationLine: "underline",
+        }}>Select</Text>
+
+    </View>
+  )
+  ////////////////////////////////////////////////////
 
 
-    return(
-        <View style={styles.container}>
+  return (
+    <>
+    <View style={styles.container}>
       <FlatList
         data={journeyList}//array of objects
-        renderItem={({ item }) => {
+        renderItem={({ item, index }) => {
           const date = new Date(item.startTime);
-
+          console.log(index)
           return (
             <Pressable
               onPress={() => {
@@ -83,25 +92,22 @@ export const SavedJourneyList = ({setCursor,setSelectedJourney,journeyList,setJo
               }}
             >
               <View style={styles.listView}>
-                <Text
-                  style={styles.listItem}
-                >{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text>
+                {/* <Text
+                  style={styles.listInfo}
+                >{`${date.toLocaleDateString()},${date.toLocaleTimeString()}`}</Text> */}
+                <InfoBox routePoints={item.points} index={0} mapStyle={"standard"} cursor={{latitude: item.startPoint.latitude,longitude: item.startPoint.longitude,timestamp: item.points[1].timestamp}}
 
-                <View style={styles.deleteButton}>
-                <Checkbox style={styles.checkbox} value={isChecked} onValueChange={setChecked} />
-    
-                  {/* <Button
-                    color={"red"}
-                    title="Delete"
-                    onPress={() => {
-                      deleteJourney(item.startTime);
-                      setJourneyList(
-                        journeyList.filter(
-                          (journey) => journey.startTime !== item.startTime
-                        )
-                      );
-                    }}
-                  /> */}
+                 isMobile={false} selectedJourney={item} list={true} position={{top:5,left:0}}/>
+                <View style={styles.checkbox}>
+                  <Checkbox  value={selected[index]} onValueChange={(newValue) => {
+                    setSelected((array) => {
+                      const newArray = [...array];
+                      newArray[index] = newValue;
+                      return newArray;
+                    });
+                  
+                  }
+                  } />
                 </View>
               </View>
             </Pressable>
@@ -115,24 +121,39 @@ export const SavedJourneyList = ({setCursor,setSelectedJourney,journeyList,setJo
       />
       {/*-------------end flatList-----------------*/}
 
-     
+
     </View>
-    )
+    {journeysSelected&&
+    <Button style={styles.deleteButton} title="Delete Selected" onPress={() => {
+      selected.forEach((item, index) => {
+        if (item === true) {
+          deleteJourney(journeyList[index].startTime);
+          setJourneyList(
+            journeyList.filter(
+              (journey) => journey.startTime !== journeyList[index].startTime
+            )
+          );
+        }
+      });
+    }
+  } />}
+  </>
+  )
 }
 const styles = StyleSheet.create({
-    container: {
-        flex: 1, //100% of screen, space between items
-        borderWidth: 1,
-        marginTop: 5,
-        fontSize: 20,
-        borderColor: "black",
-      },
-      
-  listView: { borderWidth:1,borderColor:"green",flexDirection: "row", justifyContent: "space-between" },
+  container: {
+    flex: 1, //100% of screen, space between items
+    borderWidth: 1,
+    marginTop: 5,
+    fontSize: 20,
+    borderColor: "black",
+  },
 
-  listItem: {
-    borderWidth:1,
-    borderColor:"red",
+  listView: { borderWidth: 1, borderColor: "green", flexDirection: "row", justifyContent: "space-between" },
+
+  listInfo: {
+    borderWidth: 1,
+    borderColor: "red",
     padding: 20,
     marginTop: 5,
     fontSize: 15,
@@ -153,5 +174,12 @@ const styles = StyleSheet.create({
     marginLeft: 5,
     marginRight: 5,
   },
+  checkbox:{
+    alignSelf: "center",
+ 
+    padding: 20,
+    marginTop: 5,
+    fontSize: 15,
+  }
 
-    });
+});

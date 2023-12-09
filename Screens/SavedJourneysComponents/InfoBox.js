@@ -5,15 +5,15 @@ import { secondsToTimeString } from "../../utils/secondsToTimeString";
 export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJourney,list,position}) => {
     return (
         <>
-              <View style={{ ...styles.info, opacity: 0.7, zIndex: 1, backgroundColor: "grey",top:position.top,left:position.left }}></View>
+             {!list&& <View style={{ ...styles.info, opacity: 0.7, zIndex: 1, backgroundColor: "grey",top:position.top,left:position.left }}></View>}
 
-              <View style={{ ...styles.info, zIndex: 2, opacity: 1, borderColor: mapStyle === "standard" ? "black" : "white", top:position.top,left:position.left }}>
+             <View style={{ ...styles.info, borderWidth:list?0:1,zIndex: 2, opacity: 1, borderColor: mapStyle === "standard" ? "black" : "white", position:!list?"absolute":"relative",top:position.top,left:position.left ,width:list?220:"90%",height:list?75:150,fontSize:list?12:15,marginTop:list?0:5,marginBottom:list?15:0}}>
                 {/* display date of cursor point */}
                 <Text style={{ ...styles.description, color: mapStyle === "standard" ? "black" : "white" }}>
                   Date: {new Date(cursor.timestamp).toLocaleDateString()}
                 </Text>
             {/* display time of cursor point */}
-            <Text
+          {!list&&  <Text
               style={
                 isMobile
                   ? { ...styles.description, color: mapStyle==="standard"?"blue":"cyan", borderWidth: 1 }
@@ -21,7 +21,7 @@ export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJo
               }
             >
               Time: {new Date(cursor.timestamp).toLocaleTimeString()}
-            </Text>
+            </Text>}
 
             {/* add up distances between points, display total distance*/}
             <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
@@ -62,7 +62,7 @@ export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJo
             </Text>
 
             {/*Calculate and display local speed */}
-            <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
+            {!list&&<Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
               Speed:{" "}
               {(
                 (getDistance(cursor, routePoints[index + 1]) /
@@ -71,7 +71,7 @@ export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJo
                 2.23694
               ).toFixed(2)}{" "}
               mph{" "}
-            </Text>
+            </Text>}
 
             {/* calculate and display average journey speed**/}
             <Text style={{...styles.description,color:mapStyle==="standard"?"black":"white"}}>
@@ -89,7 +89,7 @@ export const InfoBox = ({ routePoints,index,mapStyle,cursor ,isMobile,selectedJo
               ).toFixed(2)}{" "}
               mph{" "}
             </Text>
-          </View>
+        </View>
           </>
 
     );
@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
         borderRadius: 10,
       },
       description: {
-        fontSize: 15,
+        // fontSize: 12,
         textAlign: "center",
         fontWeight: "bold",
       },
