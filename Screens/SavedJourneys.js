@@ -46,6 +46,8 @@ export const SavedJourneys = ({ navigation }) => {
     if (selectedJourney) {
       //copy all journey waypoints
       setRoutePoints([...selectedJourney.points]);
+      setSpeed(()=>selectedJourney.interval)
+      console.log(selectedJourney.interval,"interval" )
     }
   }, [selectedJourney]);
   useEffect(() => {
@@ -54,6 +56,7 @@ export const SavedJourneys = ({ navigation }) => {
         setTimeout(() => {
           setIndex(index + 1);
         }, speed);
+        console.log(speed,"speed")
       } else {
         setCursor(routePoints[0]);
         setIndex(0);
@@ -97,7 +100,8 @@ export const SavedJourneys = ({ navigation }) => {
       isMobile={isMobile}
       setIsMobile={setIsMobile} 
       speed={speed}
-      setSpeed={setSpeed}
+        setSpeed={setSpeed}
+        interval={speed}
        />
     // end map journey display
   ) : (

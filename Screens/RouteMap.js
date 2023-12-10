@@ -157,6 +157,7 @@ export const RouteMap = ({ navigation }) => {
           longitudeDelta: 0.005,
         },
         points: waypoints,
+        interval:interval
       };
     });
     setIsRecording(true);
@@ -168,7 +169,7 @@ export const RouteMap = ({ navigation }) => {
     setIsRecording(false);
     //store route data in db here....
     //add endpoint and endtime to routeData
-    console.log(routeData, "route data");
+    // console.log(routeData, "route data");
     addJourney({
       ...routeData,
       endPoint: waypoints[waypoints.length - 1],
@@ -305,7 +306,7 @@ TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
     alert("error in background task manager", error);
   }
   if (data) {
-    console.log(data.locations[0].coords, "data")
+    // console.log(data.locations[0].coords, "data")
     const { locations } = data;
     lat = locations[0].coords.latitude;
     long = locations[0].coords.longitude;

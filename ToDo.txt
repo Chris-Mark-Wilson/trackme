@@ -20,5 +20,8 @@ routeMap timer only updates from given points so really needs to be on the count
 
 make the settings page look decent..
 
+check the endtime, see if it can be more accurate than the last waypoint.timestamp.. as in use the counter...
+
+
 
 

@@ -9,7 +9,8 @@ export const RouteProvider = ({children}) => {
         endPoint: null,
       points: [], // waypoints {latitude, longitude, timestamp}
         endTime: null,
-        region:null
+        region: null,
+        interval:null
     })
     return (
         <RouteContext.Provider value={{routeData, setRouteData}}>
