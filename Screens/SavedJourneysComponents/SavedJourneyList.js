@@ -7,6 +7,7 @@ import { useState,useEffect } from 'react';
 
 export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, setJourneyList }) => {
   //array holding checkbox values
+
   const [selected, setSelected] = useState(new Array(journeyList.length).fill(false));
   //flag for whether any checkboxes are selected
  const [journeysSelected, setJourneysSelected] = useState(false);

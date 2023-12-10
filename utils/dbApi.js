@@ -41,6 +41,7 @@ export const deleteJourney = async (array) => {
 export const clearAllJourneys = async () => {
     try {
         await AsyncStorage.removeItem('journeys');
+        console.log("all journeys cleared");
     } catch (error) {
         console.log(error,"error in api clear all journeys");
         return Promise.reject(error);

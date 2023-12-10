@@ -27,7 +27,8 @@ export const SavedJourneys = ({ navigation }) => {
       setIsLoading(true);
       getAllJourneys()
         .then((journeys) => {
-          setJourneyList(journeys);
+          //if no journeys set journeyList to empty array or it crashes
+          setJourneyList(journeys||[]);
           setIsLoading(false);
         })
         .catch((error) => {

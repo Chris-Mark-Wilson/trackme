@@ -12,7 +12,8 @@ import * as Location from "expo-location";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { ZoomSlider } from "./SharedComponents/ZoomSlider";
 import { Stopwatch } from "./RouteMapComponents/Stopwatch";
-import {MapToggle} from './SharedComponents/MapToggle'
+import { MapToggle } from './SharedComponents/MapToggle'
+import { clearAllJourneys } from "../utils/dbApi";
 
 import { AppState } from "react-native";
 
@@ -37,6 +38,11 @@ export const RouteMap = ({ navigation }) => {
 
   //setup location tracking and appstate listeners////////////////////////
   useEffect(() => {
+    /////////////////////////////
+    //for testing
+    clearAllJourneys();
+    ///////////////////////////////
+    
     const subscription = AppState.addEventListener("change", handleAppStateChange);
     getLocationPermissions()
       .then((response) => {
