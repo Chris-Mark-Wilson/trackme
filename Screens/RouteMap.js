@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { StyleSheet, View, StatusBar, Button } from "react-native";
 import { useContext } from "react";
 import { RouteContext } from "../contexts/routeContext";
+import { SettingContext } from "../contexts/settingContext";
 import { addJourney } from "../utils/dbApi";
 import * as TaskManager from "expo-task-manager";
 import * as Location from "expo-location";
@@ -24,6 +25,7 @@ let waypoints = [];
 
 export const RouteMap = ({ navigation }) => {
   const { routeData, setRouteData } = useContext(RouteContext);
+  const{interval}=useContext(SettingContext)
   const [isMobile, setIsMobile] = useState(false);
   const [counter, setCounter] = useState(0);
   const timerInterval = 1000;
@@ -35,12 +37,12 @@ export const RouteMap = ({ navigation }) => {
 
   //setup location tracking and appstate listeners////////////////////////
   useEffect(() => {
-    AppState.addEventListener("change", handleAppStateChange);
+    const subscription = AppState.addEventListener("change", handleAppStateChange);
     getLocationPermissions()
       .then((response) => {
         Location.startLocationUpdatesAsync(LOCATION_TRACKING, {
           accuracy: Location.Accuracy.BestForNavigation,
-          timeInterval: 1000,
+          timeInterval: interval,
 
           foregroundService: {
             notificationTitle: "Location Tracking",
@@ -57,9 +59,9 @@ export const RouteMap = ({ navigation }) => {
     //cleanup
     return () => {
       Location.stopLocationUpdatesAsync(LOCATION_TRACKING);
-      AppState.removeEventListener("change", handleAppStateChange);
+      subscription.remove();
     };
-  }, []);
+  }, [interval]);
 
   //handle appstate change///////////////////////////////////////////
   const handleAppStateChange = (nextAppState) => {
@@ -94,7 +96,7 @@ export const RouteMap = ({ navigation }) => {
   useEffect(() => {
     setLocation({ ...waypoints[waypoints.length - 1] });
     if (isMobile) {
-      // console.log(waypoints,"waypoints in useEffect")
+      
       //add waypoint to routeData////////////////////////////////
       setRouteData((oldData) => {
         return {
@@ -274,7 +276,7 @@ TaskManager.defineTask(LOCATION_TRACKING, async ({ data, error }) => {
     alert("error in background task manager", error);
   }
   if (data) {
-    // console.log(data.locations[0].coords, "data")
+    console.log(data.locations[0].coords, "data")
     const { locations } = data;
     lat = locations[0].coords.latitude;
     long = locations[0].coords.longitude;
