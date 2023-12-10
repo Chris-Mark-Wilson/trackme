@@ -23,11 +23,27 @@ let lat = 0;
 let long = 0;
 let time = 0;
 let waypoints = [];
+/*
+these need to be global so that they can be accessed by the background task manager
+the function has to use the global variables, otherwise it will not work
+it cant handle state variables in the background...
+the state variables are used to update the map and the stopwatch(counter always runs a 1 second intervals)
+the global variables are used to update the route data
+the route data is used to store the journey in the db
+it copies the waypoints from the global variables to the route data
+when the app is in the foreground
+otherwise it just stores the waypoints in the global variables
+it starts getting location data at the interval specified in settings
+the moment the app is opened
+it only starts recording when the start button is pressed
+it stops recording when the stop button is pressed
+and stores the journey in the db
+*/
 
 export const RouteMap = ({ navigation }) => {
   const { routeData, setRouteData } = useContext(RouteContext);
-  const{interval}=useContext(SettingContext)
-  const [isMobile, setIsMobile] = useState(false);
+  const{interval,isRecording,setIsRecording}=useContext(SettingContext)
+ 
   const [counter, setCounter] = useState(0);
   const timerInterval = 1000;
   const [location, setLocation] = useState({});
@@ -40,9 +56,9 @@ export const RouteMap = ({ navigation }) => {
   useEffect(() => {
     /////////////////////////////
     //for testing
-    clearAllJourneys();
+    // clearAllJourneys();
     ///////////////////////////////
-    
+
     const subscription = AppState.addEventListener("change", handleAppStateChange);
     getLocationPermissions()
       .then((response) => {
@@ -74,7 +90,7 @@ export const RouteMap = ({ navigation }) => {
     if (appState.match(/inactive|background/) && nextAppState === "active") {
       console.log("App has come to the foreground!");
       // The app has come to the foreground, copy the data recorded whilst in the background
-      if (isMobile) {
+      if (isRecording) {
         setRouteData((oldData) => {
           return {
             ...oldData,
@@ -87,6 +103,11 @@ export const RouteMap = ({ navigation }) => {
       setAppState(nextAppState);
     }
   };
+
+  //restart counter when recording starts for stopwatch////////////////////////
+  useEffect(() => {
+    setCounter(0);
+  },[isRecording])
 
   ///timer for updating location//////////////////////////////////////
   useEffect(() => {
@@ -101,16 +122,18 @@ export const RouteMap = ({ navigation }) => {
   //update location///////////////////////////////////////////////
   useEffect(() => {
     setLocation({ ...waypoints[waypoints.length - 1] });
-    if (isMobile) {
+    if (isRecording) {
       
       //add waypoint to routeData////////////////////////////////
-      setRouteData((oldData) => {
-        return {
-          ...oldData,
-          points: [...waypoints],
-        };
-      });
-    }
+   
+        setRouteData((oldData) => {
+          return {
+            ...oldData,
+            points: [...waypoints],
+          };
+        });
+      }
+    
   }, [counter]);
 
   //start journey//////////////////////////////////////////
@@ -136,13 +159,13 @@ export const RouteMap = ({ navigation }) => {
         points: waypoints,
       };
     });
-    setIsMobile(true);
+    setIsRecording(true);
   };
 
   //stop journey////////////////////////////////////////////
   const handleStopPress = () => {
     //stop recording
-    setIsMobile(false);
+    setIsRecording(false);
     //store route data in db here....
     //add endpoint and endtime to routeData
     console.log(routeData, "route data");
@@ -199,8 +222,8 @@ export const RouteMap = ({ navigation }) => {
             showsCompass={true}
             mapType={mapStyle}
           >
-            {/* if isMobile is true, then show the stop button and the route */}
-            {isMobile && routeData.startPoint && (
+            {/* if isRecording is true, then show the stop button and the route */}
+            {isRecording && routeData.startPoint && (
               <>
                 <Polyline coordinates={[...routeData.points]} strokeWidth={4} strokeColor={mapStyle==="standard"?"black":"red"}/>
                 <Marker coordinate={routeData.startPoint} pinColor="green" />
@@ -211,20 +234,20 @@ export const RouteMap = ({ navigation }) => {
           {/*vertical slider for zoom **/}
           <ZoomSlider zoom={zoom} setZoom={setZoom} mapStyle={mapStyle}/>
 
-          {!isMobile && lat && long && (
+          {!isRecording && lat && long && (
             <View style={styles.startButton}>
               <Button title="Start" onPress={handleStartPress} />
             </View>
           )}
-          {isMobile && (
+          {isRecording && (
             <View style={styles.stopButton}>
               <Button title="Stop" onPress={handleStopPress} />
             </View>
           )}
-          {isMobile && routeData&&(
+          {isRecording && routeData&&(
             <Stopwatch
-              routeData={routeData}
-            
+              
+              counter={counter}
             />
           )
           }

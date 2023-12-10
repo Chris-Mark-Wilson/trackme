@@ -18,6 +18,7 @@ add an interval prop to journey data..
 introduce an isRecording context..
 routeMap timer only updates from given points so really needs to be on the counter rather..
 
+make the settings page look decent..
 
 
 
