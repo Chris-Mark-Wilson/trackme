@@ -32,3 +32,5 @@ expo:{....
 
   Issues with refusal to build or crashing immediately on start are usually google api related and you may find you have to restrict and then de-restrict the app in your api key credentials
 
+
+current build: https://expo.dev/artifacts/eas/dyvHtaRLKYrUsDAkXWX285.apk
