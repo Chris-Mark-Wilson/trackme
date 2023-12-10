@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import {
   getAllJourneys
  } from "../utils/dbApi";
@@ -11,6 +11,8 @@ import {
 import { SavedJourneyList } from "./SavedJourneysComponents/SavedJourneyList";
 import { SavedJourneyMapView } from "./SavedJourneysComponents/SavedJourneyMapView";
 
+
+
 export const SavedJourneys = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedJourney, setSelectedJourney] = useState(null);
@@ -20,6 +22,7 @@ export const SavedJourneys = ({ navigation }) => {
   const [journeyList, setJourneyList] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
   const [speed, setSpeed] = useState(1000);
+ 
 
   useEffect(() => {
     //focus listener ensures up to date data
@@ -47,20 +50,23 @@ export const SavedJourneys = ({ navigation }) => {
       //copy all journey waypoints
       setRoutePoints([...selectedJourney.points]);
       setSpeed(()=>selectedJourney.interval)
-      console.log(selectedJourney.interval,"interval" )
+     
     }
   }, [selectedJourney]);
+
   useEffect(() => {
     if (isMobile) {
       if (index < routePoints.length - 2) {
         setTimeout(() => {
           setIndex(index + 1);
         }, speed);
-        console.log(speed,"speed")
+  
       } else {
         setCursor(routePoints[0]);
         setIndex(0);
         setIsMobile(false);
+        setSpeed(selectedJourney.interval);
+       
       }
     }
     setCursor(routePoints[index]);
@@ -101,7 +107,7 @@ export const SavedJourneys = ({ navigation }) => {
       setIsMobile={setIsMobile} 
       speed={speed}
         setSpeed={setSpeed}
-        interval={speed}
+        journeyInterval={selectedJourney.interval}
        />
     // end map journey display
   ) : (

@@ -74,7 +74,7 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
   ////////////////////////////////////////////////////
 const deleteSelected =  () => {
   const deleteArray=[...journeyList.map((item,index)=>selected[index]?item.startTime:null)]
-  console.log(deleteArray,"delete array")
+ 
   deleteJourney(deleteArray)
   .then((result)=>{
    alert(`${deleteArray.length} journey${deleteArray.length>1?"s":""} deleted`)
@@ -91,7 +91,7 @@ const deleteSelected =  () => {
         data={journeyList}//array of objects
         renderItem={({ item, index }) => {
           const date = new Date(item.startTime);
-          console.log(index)
+         
           return (
             <Pressable
               onPress={() => {

@@ -49,7 +49,7 @@ export const Settings = ({ navigation }) => {
           left: "40%",
         }}
       >
-        <Button title="Back" onPress={() => navigation.goBack()}></Button>
+        <Button title="Back"color="green" onPress={() => navigation.goBack()}></Button>
       </View>
     </>
   );

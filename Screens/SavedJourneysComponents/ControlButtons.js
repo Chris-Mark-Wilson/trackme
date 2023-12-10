@@ -10,7 +10,7 @@ export const ControlButtons = ({
   setIndex,
   setCursor,
   mapStyle,
-  interval,
+  journeyInterval,
 }) => {
   return (
       <>
@@ -32,8 +32,8 @@ export const ControlButtons = ({
         <Pressable
           onPressIn={() => {
             setSpeed((oSpeed) => {
-              if (oSpeed < interval) {
-                return oSpeed + 100;
+              if (oSpeed < journeyInterval) {
+                return oSpeed + (journeyInterval/10);
               } else return oSpeed;
             });
           }}
@@ -53,7 +53,7 @@ export const ControlButtons = ({
               } else {
                 setIndex(0);
                 setCursor(routePoints[0]);
-                setSpeed(interval);
+                setSpeed(journeyInterval);
               }
             });
           }}
@@ -76,7 +76,7 @@ export const ControlButtons = ({
         <Pressable
           onPressIn={() => {
             setIsMobile(true);
-            setSpeed(interval);
+            
           }}
         >
           <Entypo
@@ -89,8 +89,8 @@ export const ControlButtons = ({
         <Pressable
           onPressIn={() => {
             setSpeed((oSpeed) => {
-              if (oSpeed >= 100) {
-                return oSpeed - 100;
+              if (oSpeed >= 0) {
+                return oSpeed - (journeyInterval/10);
               } else return oSpeed;
             });
           }}

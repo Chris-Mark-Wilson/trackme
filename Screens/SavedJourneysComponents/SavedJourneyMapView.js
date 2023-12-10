@@ -7,9 +7,9 @@ import MapView, { Polyline, Marker } from "react-native-maps";
 import { PROVIDER_GOOGLE } from "react-native-maps";
 import { View, Text, StyleSheet } from "react-native";
 import { InfoBox } from "./InfoBox";
-import { useState,useEffect } from "react";
+import { useState} from "react";
 
-export const SavedJourneyMapView = ({cursor,selectedJourney,setSelectedJourney,routePoints,index,setIndex,setCursor,isMobile,setIsMobile,speed,setSpeed,interval}) => {
+export const SavedJourneyMapView = ({cursor,selectedJourney,setSelectedJourney,routePoints,index,setIndex,setCursor,isMobile,setIsMobile,speed,setSpeed,journeyInterval}) => {
 
     const [zoom, setZoom] = useState(0.005);
     const [mapStyle, setMapStyle] = useState("standard");
@@ -99,7 +99,7 @@ export const SavedJourneyMapView = ({cursor,selectedJourney,setSelectedJourney,r
             setIsMobile={setIsMobile}
             setCursor={setCursor}
             mapStyle={mapStyle}
-            interval={interval}
+            journeyInterval={journeyInterval}
           />
           {/* //display speed multipler if mobile */}
           {isMobile && (
@@ -133,7 +133,7 @@ export const SavedJourneyMapView = ({cursor,selectedJourney,setSelectedJourney,r
                     color: mapStyle != "standard" ? "white" : "black",
                   }}
                 >
-                  Speed:{(interval / speed).toFixed(2)} x
+                  Speed:{(journeyInterval / speed).toFixed(2)} x
                 </Text>
               </View>
             </>
