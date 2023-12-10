@@ -7,7 +7,9 @@ import { useState,useEffect } from 'react';
 
 export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, setJourneyList }) => {
   //array holding checkbox values
+
   const [selected, setSelected] = useState(new Array(journeyList.length).fill(false));
+  //flag for whether any checkboxes are selected
  const [journeysSelected, setJourneysSelected] = useState(false);
  
  useEffect(() => {
@@ -72,14 +74,14 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
   ////////////////////////////////////////////////////
 const deleteSelected =  () => {
   const deleteArray=[...journeyList.map((item,index)=>selected[index]?item.startTime:null)]
-  console.log(deleteArray,"delete array")
+ 
   deleteJourney(deleteArray)
   .then((result)=>{
    alert(`${deleteArray.length} journey${deleteArray.length>1?"s":""} deleted`)
     setSelected([])
     setJourneyList(result)
   })
-  .catch(err=>console.log(err))
+  .catch(err=>alert(err))
 }
 
   return (
@@ -89,7 +91,7 @@ const deleteSelected =  () => {
         data={journeyList}//array of objects
         renderItem={({ item, index }) => {
           const date = new Date(item.startTime);
-          console.log(index)
+         
           return (
             <Pressable
               onPress={() => {

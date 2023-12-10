@@ -1,6 +1,7 @@
 import { createContext, useState } from "react";
 export const RouteContext = createContext();
 
+
 export const RouteProvider = ({children}) => {
     const [routeData, setRouteData] = useState({ 
         startTime: null,
@@ -8,7 +9,8 @@ export const RouteProvider = ({children}) => {
         endPoint: null,
       points: [], // waypoints {latitude, longitude, timestamp}
         endTime: null,
-        region:null
+        region: null,
+        interval:null
     })
     return (
         <RouteContext.Provider value={{routeData, setRouteData}}>

@@ -1,8 +1,8 @@
 import {View,Text,StyleSheet} from 'react-native'
 import {secondsToTimeString} from '../../utils/secondsToTimeString'
 
-export const Stopwatch = ({routeData}) =>{
-    const time=secondsToTimeString((routeData.points[routeData.points.length-1].timestamp-routeData.startTime)/1000)
+export const Stopwatch = ({counter}) =>{
+    const time=secondsToTimeString(counter)
     return(
         <View style={styles.container}> 
         <Text style={styles.text}>{time}</Text>

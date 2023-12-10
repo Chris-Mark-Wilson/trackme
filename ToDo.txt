@@ -1,7 +1,6 @@
-tidy up journey list, display more info per journey
 
-divide journey into 100 points for seek so it moves
-reasonably across the journey 
+
+
 
 pause button for route route map
 
@@ -11,7 +10,17 @@ add picture taking functionality to points of interest..
 settings page - quick exercise, hiking trip, holiday recording etc..
 
 create 'are you sure' modal for delete trip buttons,
-replace delete buttons with a checkbox, once any have been checked show delete button, then show modal to check sure
+replace delete buttons with a checkbox, once any have been checked show delete 
+
+ok, so, working at variable interval for getting location BUT the replay needs to know what that is...
+also need to know if isRecording in settings so cannot change interval whilst recording, otherwise its all gonna go to shit..
+add an interval prop to journey data..
+introduce an isRecording context..
+routeMap timer only updates from given points so really needs to be on the counter rather..
+
+make the settings page look decent..
+
+check the endtime, see if it can be more accurate than the last waypoint.timestamp.. as in use the counter...
 
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useContext } from "react";
 import {
   getAllJourneys
  } from "../utils/dbApi";
@@ -11,6 +11,8 @@ import {
 import { SavedJourneyList } from "./SavedJourneysComponents/SavedJourneyList";
 import { SavedJourneyMapView } from "./SavedJourneysComponents/SavedJourneyMapView";
 
+
+
 export const SavedJourneys = ({ navigation }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [selectedJourney, setSelectedJourney] = useState(null);
@@ -20,6 +22,7 @@ export const SavedJourneys = ({ navigation }) => {
   const [journeyList, setJourneyList] = useState([]);
   const [isMobile, setIsMobile] = useState(false);
   const [speed, setSpeed] = useState(1000);
+ 
 
   useEffect(() => {
     //focus listener ensures up to date data
@@ -27,7 +30,8 @@ export const SavedJourneys = ({ navigation }) => {
       setIsLoading(true);
       getAllJourneys()
         .then((journeys) => {
-          setJourneyList(journeys);
+          //if no journeys set journeyList to empty array or it crashes
+          setJourneyList(journeys||[]);
           setIsLoading(false);
         })
         .catch((error) => {
@@ -45,18 +49,24 @@ export const SavedJourneys = ({ navigation }) => {
     if (selectedJourney) {
       //copy all journey waypoints
       setRoutePoints([...selectedJourney.points]);
+      setSpeed(()=>selectedJourney.interval)
+     
     }
   }, [selectedJourney]);
+
   useEffect(() => {
     if (isMobile) {
       if (index < routePoints.length - 2) {
         setTimeout(() => {
           setIndex(index + 1);
         }, speed);
+  
       } else {
         setCursor(routePoints[0]);
         setIndex(0);
         setIsMobile(false);
+        setSpeed(selectedJourney.interval);
+       
       }
     }
     setCursor(routePoints[index]);
@@ -96,7 +106,8 @@ export const SavedJourneys = ({ navigation }) => {
       isMobile={isMobile}
       setIsMobile={setIsMobile} 
       speed={speed}
-      setSpeed={setSpeed}
+        setSpeed={setSpeed}
+        journeyInterval={selectedJourney.interval}
        />
     // end map journey display
   ) : (
