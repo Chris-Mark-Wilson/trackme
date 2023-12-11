@@ -36,7 +36,8 @@ add directions
 
 
 in app.json add the following code
-expo:{....
+``````
+expo:{
 
 
       "config":{
@@ -45,9 +46,10 @@ expo:{....
         }
       }
     }
-     this should alleviate any build issues....
+``````
+this should alleviate any build issues..
      
-     build the app again, it should now work..
+build the app again, it should now work..
 
   Issues with refusal to build or crashing immediately on start are usually google api related and you may find you have to restrict and then de-restrict the app in your api key credentials
 

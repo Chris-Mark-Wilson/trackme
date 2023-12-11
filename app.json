@@ -32,7 +32,7 @@
       "package": "com.chrismark_wilson.trackme",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyB4K_Jt1_XdGfpQ-gxHTuuqi88hnaMMpRs"
+          "apiKey": "your google api key goes here"
         }
       }
     },
