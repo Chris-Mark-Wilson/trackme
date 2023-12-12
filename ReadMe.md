@@ -4,9 +4,11 @@
 
 <img src="./assets/screenShot1.jpg" width="200"/> <img src="./assets/screenShot2.jpg" width="200"/> <img src="./assets/screenShot3.jpg" width="200"/> <img src="./assets/screenShot4.jpg" width="200"/> <img src="./assets/screenShot5.jpg" width="200"/>
 
-[![Usage video](https://i9.ytimg.com/vi_webp/8Qeuj8PF4dA/mqdefault.webp?v=65775ccf&sqp=CLC43asG&rs=AOn4CLApRL7GUWtGMWObQzg51zotvo7srw)](https://youtu.be/oNlBcE1HyD4)
 
-[Download apk currently unsigned by google play, signed link coming soon](https://expo.dev/artifacts/eas/dyvHtaRLKYrUsDAkXWX285.apk)
+
+[Download apk currently unsigned by google play, signed link coming soon](https://expo.dev/artifacts/eas/kv6kFytZx787wnvrdZHfoY.apk)
+
+<img src="./assets/qrCode.png" width="200"/>
 
 Project written using [expo](https://docs.expo.dev/), [React Native](https://reactnative.dev/)
 
