@@ -72,11 +72,21 @@ export const SavedJourneyList = ({ setCursor, setSelectedJourney, journeyList, s
     </View>
   )
   ////////////////////////////////////////////////////
-const deleteSelected =  () => {
-  const deleteArray=[...journeyList.map((item,index)=>selected[index]?item.startTime:null)]
+  const deleteSelected = () => {
+    //if item is selected, add its startTime to deleteArray
+    //else add null
+    const deleteArray = [...journeyList.map((item, index) => selected[index] ? item.startTime : null)]
+    //remove null elements
+    deleteArray.forEach((item, index) => {
+      if (item === null) {
+        deleteArray.splice(index, 1)
+      }
+    }
+    )
  
   deleteJourney(deleteArray)
-  .then((result)=>{
+    .then((result) => {
+    
    alert(`${deleteArray.length} journey${deleteArray.length>1?"s":""} deleted`)
     setSelected([])
     setJourneyList(result)

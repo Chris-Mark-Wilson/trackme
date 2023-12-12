@@ -168,35 +168,41 @@ export const RouteMap = ({ navigation }) => {
     //stop recording
     setIsRecording(false);
     //store route data in db here....
+    //if more than one initial waypoint
     //add endpoint and endtime to routeData
-    // console.log(routeData, "route data");
-    addJourney({
-      ...routeData,
-      endPoint: waypoints[waypoints.length - 1],
-      endTime: waypoints[waypoints.length - 1].timestamp,
-    })
-      .then(() => {
-        alert("journey saved");
-
-        //reset start point temp for test
-        setTimeout(() => {
-          setRouteData((oldData) => {
-            return {
-              ...oldData,
-              startPoint: null,
-              startTime: null,
-              endpoint: null,
-              endTime: null,
-              points: [],
-            };
-          });
-          navigation.navigate("Saved Journeys");
-        }, 1000);
+  
+    if (waypoints.length > 1) {
+      addJourney({
+        ...routeData,
+        endPoint: waypoints[waypoints.length - 1],
+        endTime: waypoints[waypoints.length - 1].timestamp,
       })
-      .catch((error) => {
-        alert("error in saving journey");
-        console.log(error, "error in route map");
-      });
+        .then(() => {
+          alert("journey saved");
+
+          //reset start point temp for test
+          setTimeout(() => {
+            setRouteData((oldData) => {
+              return {
+                ...oldData,
+                startPoint: null,
+                startTime: null,
+                endpoint: null,
+                endTime: null,
+                points: [],
+              };
+            });
+            navigation.navigate("Saved Journeys");
+          }, 1000);
+        })
+        .catch((error) => {
+          alert("error in saving journey");
+          console.log(error, "error in route map");
+        });
+    } else {
+      //only one initial waypoint recorded 
+      alert("Insufficient Journey Data");
+    }
   };
   //press on map/////////////////////////////////////////////
   const handleMapPress = (e) => {
