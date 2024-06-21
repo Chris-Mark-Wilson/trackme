@@ -8,7 +8,7 @@
 
 [Download apk currently unsigned by google play, signed link coming soon](https://expo.dev/artifacts/eas/kv6kFytZx787wnvrdZHfoY.apk)
 
-<img src="./assets/qrCode.png" width="200"/>
+<img src="./assets/qrCode.jpg" width="200"/>
 
 Project written using [expo](https://docs.expo.dev/), [React Native](https://reactnative.dev/)
 
