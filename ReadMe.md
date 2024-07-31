@@ -1,6 +1,7 @@
 # TrackMe
 ## Basic fitness tracking app
 
+A application for tracking your movements during exercise, similar to strava, but free. 
 
 <img src="./assets/screenShot1.jpg" width="200"/> <img src="./assets/screenShot2.jpg" width="200"/> <img src="./assets/screenShot3.jpg" width="200"/> <img src="./assets/screenShot4.jpg" width="200"/> <img src="./assets/screenShot5.jpg" width="200"/>
 
